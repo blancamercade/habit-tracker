@@ -15,68 +15,19 @@ export default function HomeScreen() {
   ];
 
   const [habits, setHabits] = useState(defaultHabits);
-  const [lastResetDate, setLastResetDate] = useState('');
 
-  // Load habits and last reset date
   useEffect(() => {
     const loadData = async () => {
       try {
         const storedHabits = await AsyncStorage.getItem('habits');
-        const storedDate = await AsyncStorage.getItem('lastResetDate');
         if (storedHabits) setHabits(JSON.parse(storedHabits));
-        if (storedDate) setLastResetDate(storedDate);
       } catch (error) {
-        console.error('Failed to load data:', error);
+        console.error('Failed to load habits:', error);
       }
     };
     loadData();
   }, []);
 
-  // Save habits when they change
-  useEffect(() => {
-    const saveData = async () => {
-      try {
-        await AsyncStorage.setItem('habits', JSON.stringify(habits));
-      } catch (error) {
-        console.error('Failed to save habits:', error);
-      }
-    };
-    saveData();
-  }, [habits]);
-
-  // Reset and save history at midnight
-  useEffect(() => {
-    const today = new Date().toISOString().split('T')[0];
-    if (lastResetDate !== today) {
-      const completedHabits = habits.filter(habit => habit.completed).map(habit => habit.name);
-      
-      if (completedHabits.length > 0) {
-        const saveHistory = async () => {
-          try {
-            const history = await AsyncStorage.getItem('habitHistory');
-            const historyArray = history ? JSON.parse(history) : [];
-            historyArray.unshift({ date: lastResetDate, completed: completedHabits });
-            await AsyncStorage.setItem('habitHistory', JSON.stringify(historyArray));
-          } catch (error) {
-            console.error('Failed to save history:', error);
-          }
-        };
-        saveHistory();
-      }
-
-      // Reset habits for the new day
-      const updatedHabits = habits.map(habit => ({
-        ...habit,
-        streak: habit.completed ? habit.streak + 1 : 0,
-        completed: false,
-      }));
-      setHabits(updatedHabits);
-      setLastResetDate(today);
-      AsyncStorage.setItem('lastResetDate', today);
-    }
-  }, [lastResetDate]);
-
-  // Toggle habit completion
   const toggleHabit = (id: string) => {
     setHabits(prevHabits =>
       prevHabits.map(habit =>
@@ -87,6 +38,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.title}>Today's Habits</Text>
       <FlatList
         data={habits}
         keyExtractor={item => item.id}
@@ -112,6 +64,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f5f5f5',
     paddingTop: 50,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
   habitItem: {
     backgroundColor: 'white',
