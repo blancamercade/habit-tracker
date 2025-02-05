@@ -3,49 +3,66 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
-  // List of habits with a "completed" status
-  const [habits, setHabits] = useState([
-    { id: '1', name: 'Drink 1.5L of water', completed: false },
-    { id: '2', name: 'Exercise', completed: false },
-    { id: '3', name: 'Take protein drink', completed: false },
-    { id: '4', name: 'Complete 1 meaningful work task', completed: false },
-    { id: '5', name: 'Stretch', completed: false },
-    { id: '6', name: 'Quality time with kids or Colin', completed: false },
-    { id: '7', name: 'Read', completed: false },
-    { id: '8', name: 'Sleep by 10:30 PM', completed: false },
-  ]);
+  const defaultHabits = [
+    { id: '1', name: 'Drink 1.5L of water', completed: false, streak: 0 },
+    { id: '2', name: 'Exercise', completed: false, streak: 0 },
+    { id: '3', name: 'Take protein drink', completed: false, streak: 0 },
+    { id: '4', name: 'Complete 1 meaningful work task', completed: false, streak: 0 },
+    { id: '5', name: 'Stretch', completed: false, streak: 0 },
+    { id: '6', name: 'Quality time with kids or Colin', completed: false, streak: 0 },
+    { id: '7', name: 'Read', completed: false, streak: 0 },
+    { id: '8', name: 'Sleep by 10:30 PM', completed: false, streak: 0 },
+  ];
 
-  // Load habits from storage when the app starts
+  const [habits, setHabits] = useState(defaultHabits);
+  const [lastResetDate, setLastResetDate] = useState('');
+
+  // Load habits and last reset date
   useEffect(() => {
-    const loadHabits = async () => {
+    const loadData = async () => {
       try {
         const storedHabits = await AsyncStorage.getItem('habits');
-        if (storedHabits) {
-          setHabits(JSON.parse(storedHabits));
-        }
+        const storedDate = await AsyncStorage.getItem('lastResetDate');
+        if (storedHabits) setHabits(JSON.parse(storedHabits));
+        if (storedDate) setLastResetDate(storedDate);
       } catch (error) {
-        console.error('Failed to load habits:', error);
+        console.error('Failed to load data:', error);
       }
     };
-    loadHabits();
+    loadData();
   }, []);
 
-  // Save habits whenever they change
+  // Save habits when they change
   useEffect(() => {
-    const saveHabits = async () => {
+    const saveData = async () => {
       try {
         await AsyncStorage.setItem('habits', JSON.stringify(habits));
       } catch (error) {
         console.error('Failed to save habits:', error);
       }
     };
-    saveHabits();
+    saveData();
   }, [habits]);
 
-  // Function to toggle habit completion
+  // Check if a new day has started and reset uncompleted habits
+  useEffect(() => {
+    const today = new Date().toISOString().split('T')[0]; // Get YYYY-MM-DD format
+    if (lastResetDate !== today) {
+      const updatedHabits = habits.map(habit => ({
+        ...habit,
+        streak: habit.completed ? habit.streak + 1 : 0, // Reset streak if habit wasn't completed
+        completed: false, // Reset completion for the new day
+      }));
+      setHabits(updatedHabits);
+      setLastResetDate(today);
+      AsyncStorage.setItem('lastResetDate', today);
+    }
+  }, [lastResetDate]);
+
+  // Toggle habit completion
   const toggleHabit = (id: string) => {
-    setHabits((prevHabits) =>
-      prevHabits.map((habit) =>
+    setHabits(prevHabits =>
+      prevHabits.map(habit =>
         habit.id === id ? { ...habit, completed: !habit.completed } : habit
       )
     );
@@ -56,14 +73,14 @@ export default function App() {
       <Text style={styles.title}>My Habit Tracker</Text>
       <FlatList
         data={habits}
-        keyExtractor={(item) => item.id}
+        keyExtractor={item => item.id}
         renderItem={({ item }) => (
           <TouchableOpacity
             style={[styles.habitItem, item.completed && styles.habitCompleted]}
             onPress={() => toggleHabit(item.id)}
           >
             <Text style={[styles.habitText, item.completed && styles.habitTextCompleted]}>
-              {item.name}
+              {item.name} ({item.streak}🔥)
             </Text>
           </TouchableOpacity>
         )}
