@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
 
-export default function App() {
-  const defaultHabits = [
-    { id: '1', name: 'Drink 1.5L of water', completed: false, streak: 0 },
-    { id: '2', name: 'Exercise', completed: false, streak: 0 },
-    { id: '3', name: 'Take protein drink', completed: false, streak: 0 },
-    { id: '4', name: 'Complete 1 meaningful work task', completed: false, streak: 0 },
-    { id: '5', name: 'Stretch', completed: false, streak: 0 },
-    { id: '6', name: 'Quality time with kids or Colin', completed: false, streak: 0 },
-    { id: '7', name: 'Read', completed: false, streak: 0 },
-    { id: '8', name: 'Sleep by 10:30 PM', completed: false, streak: 0 },
-  ];
+// Define the bottom tab navigator
+const Tab = createBottomTabNavigator();
 
+const defaultHabits = [
+  { id: '1', name: 'Drink 1.5L of water', completed: false, streak: 0 },
+  { id: '2', name: 'Exercise', completed: false, streak: 0 },
+  { id: '3', name: 'Take protein drink', completed: false, streak: 0 },
+  { id: '4', name: 'Complete 1 meaningful work task', completed: false, streak: 0 },
+  { id: '5', name: 'Stretch', completed: false, streak: 0 },
+  { id: '6', name: 'Quality time with kids or Colin', completed: false, streak: 0 },
+  { id: '7', name: 'Read', completed: false, streak: 0 },
+  { id: '8', name: 'Sleep by 10:30 PM', completed: false, streak: 0 },
+];
+
+// 📌 Home Screen - Displays current habits
+function HomeScreen() {
   const [habits, setHabits] = useState(defaultHabits);
   const [lastResetDate, setLastResetDate] = useState('');
 
-  // Load habits and last reset date
   useEffect(() => {
     const loadData = async () => {
       try {
@@ -32,7 +37,6 @@ export default function App() {
     loadData();
   }, []);
 
-  // Save habits when they change
   useEffect(() => {
     const saveData = async () => {
       try {
@@ -44,14 +48,13 @@ export default function App() {
     saveData();
   }, [habits]);
 
-  // Check if a new day has started and reset uncompleted habits
   useEffect(() => {
-    const today = new Date().toISOString().split('T')[0]; // Get YYYY-MM-DD format
+    const today = new Date().toISOString().split('T')[0];
     if (lastResetDate !== today) {
       const updatedHabits = habits.map(habit => ({
         ...habit,
-        streak: habit.completed ? habit.streak + 1 : 0, // Reset streak if habit wasn't completed
-        completed: false, // Reset completion for the new day
+        streak: habit.completed ? habit.streak + 1 : 0,
+        completed: false,
       }));
       setHabits(updatedHabits);
       setLastResetDate(today);
@@ -59,7 +62,6 @@ export default function App() {
     }
   }, [lastResetDate]);
 
-  // Toggle habit completion
   const toggleHabit = (id: string) => {
     setHabits(prevHabits =>
       prevHabits.map(habit =>
@@ -89,6 +91,28 @@ export default function App() {
   );
 }
 
+// 📌 History Screen - Placeholder for now
+function HistoryScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Habit History (Coming Soon!)</Text>
+    </View>
+  );
+}
+
+// 📌 Main App - Includes Bottom Navigation
+export default function App() {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="History" component={HistoryScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+
+// 📌 Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
