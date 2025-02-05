@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
-  // List of your habits with a "completed" status
+  // List of habits with a "completed" status
   const [habits, setHabits] = useState([
     { id: '1', name: 'Drink 1.5L of water', completed: false },
     { id: '2', name: 'Exercise', completed: false },
@@ -13,6 +14,33 @@ export default function App() {
     { id: '7', name: 'Read', completed: false },
     { id: '8', name: 'Sleep by 10:30 PM', completed: false },
   ]);
+
+  // Load habits from storage when the app starts
+  useEffect(() => {
+    const loadHabits = async () => {
+      try {
+        const storedHabits = await AsyncStorage.getItem('habits');
+        if (storedHabits) {
+          setHabits(JSON.parse(storedHabits));
+        }
+      } catch (error) {
+        console.error('Failed to load habits:', error);
+      }
+    };
+    loadHabits();
+  }, []);
+
+  // Save habits whenever they change
+  useEffect(() => {
+    const saveHabits = async () => {
+      try {
+        await AsyncStorage.setItem('habits', JSON.stringify(habits));
+      } catch (error) {
+        console.error('Failed to save habits:', error);
+      }
+    };
+    saveHabits();
+  }, [habits]);
 
   // Function to toggle habit completion
   const toggleHabit = (id: string) => {
