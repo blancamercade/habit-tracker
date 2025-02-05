@@ -6,12 +6,12 @@ export default function HomeScreen() {
   const defaultHabits = [
     { id: '1', name: 'Drink 1.5L of water', completed: false, streak: 0 },
     { id: '2', name: 'Exercise', completed: false, streak: 0 },
-    { id: '3', name: 'Take protein drink', completed: false, streak: 0 },
-    { id: '4', name: 'Complete 1 meaningful work task', completed: false, streak: 0 },
+    { id: '3', name: 'Protein drink', completed: false, streak: 0 },
+    { id: '4', name: 'Meaningful work', completed: false, streak: 0 },
     { id: '5', name: 'Stretch', completed: false, streak: 0 },
-    { id: '6', name: 'Quality time with kids or Colin', completed: false, streak: 0 },
+    { id: '6', name: 'Quality time', completed: false, streak: 0 },
     { id: '7', name: 'Read', completed: false, streak: 0 },
-    { id: '8', name: 'Sleep by 10:30 PM', completed: false, streak: 0 },
+    { id: '8', name: 'Sleep 22:30', completed: false, streak: 0 },
   ];
 
   const [habits, setHabits] = useState(defaultHabits);
