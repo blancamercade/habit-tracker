@@ -2,17 +2,26 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 
 export default function App() {
-  // List of your habits
+  // List of your habits with a "completed" status
   const [habits, setHabits] = useState([
-    { id: '1', name: 'Drink 1.5L of water' },
-    { id: '2', name: 'Exercise' },
-    { id: '3', name: 'Take protein drink' },
-    { id: '4', name: 'Complete 1 meaningful work task' },
-    { id: '5', name: 'Stretch' },
-    { id: '6', name: 'Quality time with kids or Colin' },
-    { id: '7', name: 'Read' },
-    { id: '8', name: 'Sleep by 10:30 PM' },
+    { id: '1', name: 'Drink 1.5L of water', completed: false },
+    { id: '2', name: 'Exercise', completed: false },
+    { id: '3', name: 'Take protein drink', completed: false },
+    { id: '4', name: 'Complete 1 meaningful work task', completed: false },
+    { id: '5', name: 'Stretch', completed: false },
+    { id: '6', name: 'Quality time with kids or Colin', completed: false },
+    { id: '7', name: 'Read', completed: false },
+    { id: '8', name: 'Sleep by 10:30 PM', completed: false },
   ]);
+
+  // Function to toggle habit completion
+  const toggleHabit = (id: string) => {
+    setHabits((prevHabits) =>
+      prevHabits.map((habit) =>
+        habit.id === id ? { ...habit, completed: !habit.completed } : habit
+      )
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -21,8 +30,13 @@ export default function App() {
         data={habits}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <TouchableOpacity style={styles.habitItem}>
-            <Text style={styles.habitText}>{item.name}</Text>
+          <TouchableOpacity
+            style={[styles.habitItem, item.completed && styles.habitCompleted]}
+            onPress={() => toggleHabit(item.id)}
+          >
+            <Text style={[styles.habitText, item.completed && styles.habitTextCompleted]}>
+              {item.name}
+            </Text>
           </TouchableOpacity>
         )}
       />
@@ -54,8 +68,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 3,
+    alignItems: 'center',
+  },
+  habitCompleted: {
+    backgroundColor: '#c8e6c9',
   },
   habitText: {
     fontSize: 18,
+  },
+  habitTextCompleted: {
+    textDecorationLine: 'line-through',
+    color: 'gray',
   },
 });
