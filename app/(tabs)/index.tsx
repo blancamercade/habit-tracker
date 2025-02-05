@@ -38,7 +38,7 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Today's HabitsXX</Text>
+      <Text style={styles.title}>Today's Habits</Text>
       <FlatList
         data={habits}
         keyExtractor={item => item.id}
