@@ -11,6 +11,8 @@ export default function Layout() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
+        tabBarActiveTintColor: "#1B5E20", // ✅ Dark Green when selected
+        tabBarInactiveTintColor: "#757575", // ✅ Gray when not selected
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
