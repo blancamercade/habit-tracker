@@ -47,13 +47,16 @@ export default function HomeScreen() {
   
     debugStorage();
 
-  const toggleHabit = (id: string) => {
-    setHabits(prevHabits =>
-      prevHabits.map(habit =>
-        habit.id === id ? { ...habit, completed: !habit.completed } : habit
-      )
+const toggleHabit = async (id: string) => {
+  setHabits(prevHabits => {
+    const updatedHabits = prevHabits.map(habit =>
+      habit.id === id ? { ...habit, completed: !habit.completed } : habit
     );
-  };
+    // ✅ Save updated habits immediately to AsyncStorage
+    AsyncStorage.setItem('habits', JSON.stringify(updatedHabits));
+    return updatedHabits;
+  });
+};
 
 const logAndResetHabits = async () => {
   try {
