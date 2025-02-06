@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Button } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -28,74 +28,53 @@ export default function HomeScreen() {
           console.error("Failed to load habits:", error);
         }
       };
-  
       loadData();
     }, [setHabits])
   );
-  
-   const debugStorage = async () => {
-      try {
-        const history = await AsyncStorage.getItem('habitHistory');
-        console.log("Habit History:", history ? JSON.parse(history) : "No history found");
-    
-        const lastReset = await AsyncStorage.getItem('lastResetDate');
-        console.log("Last Reset Date:", lastReset || "Not set");
-      } catch (error) {
-        console.error("Error fetching history:", error);
+
+  const toggleHabit = async (id: string) => {
+    setHabits(prevHabits => {
+      const updatedHabits = prevHabits.map(habit =>
+        habit.id === id ? { ...habit, completed: !habit.completed } : habit
+      );
+      AsyncStorage.setItem('habits', JSON.stringify(updatedHabits));
+      return updatedHabits;
+    });
+  };
+
+  const logAndResetHabits = async () => {
+    try {
+      const today = new Date().toISOString().split('T')[0];
+
+      // Get completed habits
+      const completedHabits = habits.filter(habit => habit.completed).map(habit => habit.name);
+
+      if (completedHabits.length > 0) {
+        let history = await AsyncStorage.getItem('habitHistory');
+        history = history ? JSON.parse(history) : [];
+
+        history.unshift({ date: today, completed: completedHabits });
+        await AsyncStorage.setItem('habitHistory', JSON.stringify(history));
       }
-    };
-  
-    debugStorage();
 
-const toggleHabit = async (id: string) => {
-  setHabits(prevHabits => {
-    const updatedHabits = prevHabits.map(habit =>
-      habit.id === id ? { ...habit, completed: !habit.completed } : habit
-    );
-    // ✅ Save updated habits immediately to AsyncStorage
-    AsyncStorage.setItem('habits', JSON.stringify(updatedHabits));
-    return updatedHabits;
-  });
-};
+      // Reset habits
+      const updatedHabits = habits.map(habit => ({
+        ...habit,
+        streak: habit.completed ? habit.streak + 1 : 0,
+        completed: false,
+      }));
 
-const logAndResetHabits = async () => {
-  try {
-    const today = new Date().toISOString().split('T')[0];
+      setHabits(updatedHabits);
+      await AsyncStorage.setItem('habits', JSON.stringify(updatedHabits));
 
-    // Get completed habits
-    const completedHabits = habits.filter(habit => habit.completed).map(habit => habit.name);
+      setLastResetDate(today);
+      await AsyncStorage.setItem('lastResetDate', today);
 
-    if (completedHabits.length > 0) {
-      // Load existing history
-      let history = await AsyncStorage.getItem('habitHistory');
-      history = history ? JSON.parse(history) : [];
-
-      // Add new history entry
-      history.unshift({ date: today, completed: completedHabits });
-
-      // Save updated history
-      await AsyncStorage.setItem('habitHistory', JSON.stringify(history));
+      alert("✅ Habits logged and reset for tomorrow!");
+    } catch (error) {
+      console.error("❌ Error logging and resetting habits:", error);
     }
-
-    // Reset habits for the new day
-    const updatedHabits = habits.map(habit => ({
-      ...habit,
-      streak: habit.completed ? habit.streak + 1 : 0,
-      completed: false,
-    }));
-
-    setHabits(updatedHabits);
-    await AsyncStorage.setItem('habits', JSON.stringify(updatedHabits));
-
-    // Save new reset date
-    setLastResetDate(today);
-    await AsyncStorage.setItem('lastResetDate', today);
-
-    alert("✅ Habits logged and reset for tomorrow!");
-  } catch (error) {
-    console.error("❌ Error logging and resetting habits:", error);
-  }
-};
+  };
 
   return (
     <View style={styles.container}>
@@ -126,40 +105,53 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#E0F7FA', // Light teal background
     paddingTop: 50,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
+    color: '#00796B', // Dark teal
     marginBottom: 20,
   },
   habitItem: {
-    backgroundColor: 'white',
+    backgroundColor: '#FFF9C4', // Pastel yellow for pending tasks
     padding: 15,
     marginVertical: 5,
-    width: 300,
-    borderRadius: 10,
+    width: 320,
+    borderRadius: 12,
     alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3, // Android shadow
   },
   habitCompleted: {
-    backgroundColor: '#c8e6c9',
+    backgroundColor: '#FFAB91', // Soft orange for completed tasks
   },
   habitText: {
     fontSize: 18,
+    fontWeight: '600',
+    color: '#37474F', // Dark gray
   },
   habitTextCompleted: {
     textDecorationLine: 'line-through',
-    color: 'gray',
+    color: '#616161', // Lighter gray for completed
   },
   logResetButton: {
-    backgroundColor: "#007BFF", // Nice blue color
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
+    backgroundColor: "#FF7043", // Coral pink
+    paddingVertical: 14,
+    paddingHorizontal: 26,
+    borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    marginTop: 20, // Adds spacing from habits list
+    marginTop: 30,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 4, // Android shadow
   },
   logResetButtonText: {
     color: "white",
@@ -167,3 +159,4 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
