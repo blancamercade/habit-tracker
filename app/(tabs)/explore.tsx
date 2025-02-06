@@ -64,6 +64,7 @@ export default function HistoryScreen() {
               ))}
             </View>
           )}
+          nestedScrollEnabled={true} // This prevents the nested error
         />
       )}
       {/* Button to clear history data */}
