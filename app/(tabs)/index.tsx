@@ -15,6 +15,7 @@ export default function HomeScreen() {
   ];
 
   const [habits, setHabits] = useState(defaultHabits);
+  const [lastResetDate, setLastResetDate] = useState('');
 
   useEffect(() => {
     const loadData = async () => {
@@ -26,12 +27,16 @@ export default function HomeScreen() {
       }
     };
     loadData();
-    const debugStorage = async () => {
-      const history = await AsyncStorage.getItem('habitHistory');
-      console.log("Habit History:", JSON.parse(history));
-  
-      const lastReset = await AsyncStorage.getItem('lastResetDate');
-      console.log("Last Reset Date:", lastReset);
+   const debugStorage = async () => {
+      try {
+        const history = await AsyncStorage.getItem('habitHistory');
+        console.log("Habit History:", history ? JSON.parse(history) : "No history found");
+    
+        const lastReset = await AsyncStorage.getItem('lastResetDate');
+        console.log("Last Reset Date:", lastReset || "Not set");
+      } catch (error) {
+        console.error("Error fetching history:", error);
+      }
     };
   
     debugStorage();
@@ -75,12 +80,12 @@ const logAndResetHabits = async () => {
     await AsyncStorage.setItem('habits', JSON.stringify(updatedHabits));
 
     // Save new reset date
-    await AsyncStorage.setItem('lastResetDate', today);
     setLastResetDate(today);
+    await AsyncStorage.setItem('lastResetDate', today);
 
-    alert("Habits logged and reset for tomorrow!");
+    alert("✅ Habits logged and reset for tomorrow!");
   } catch (error) {
-    console.error("Error logging and resetting habits:", error);
+    console.error("❌ Error logging and resetting habits:", error);
   }
 };
 
