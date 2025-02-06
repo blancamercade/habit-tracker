@@ -25,13 +25,17 @@ export default function HistoryScreen() {
     try {
       // Clear history
       await AsyncStorage.removeItem('habitHistory');
-      // Reset habits (set streaks to 0 and mark as incomplete)
-      const resetHabits = habits.map(habit => ({
+      setHistory([]); // Clear UI history
+      // Load current habits from storage
+      let storedHabits = await AsyncStorage.getItem('habits');
+      let resetHabits = storedHabits ? JSON.parse(storedHabits) : [];
+      // Reset all streaks and mark as incomplete
+      resetHabits = resetHabits.map(habit => ({
         ...habit,
         completed: false,
         streak: 0,
       }));
-      setHabits(resetHabits); // Update UI
+      // Save reset habits back to AsyncStorage
       await AsyncStorage.setItem('habits', JSON.stringify(resetHabits));
       // Clear reset date
       await AsyncStorage.removeItem('lastResetDate');
@@ -40,6 +44,7 @@ export default function HistoryScreen() {
       console.error("❌ Error resetting history and streaks:", error);
     }
   };
+
 
   return (
     <ScrollView style={styles.container}>
