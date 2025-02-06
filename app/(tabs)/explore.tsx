@@ -19,26 +19,6 @@ export default function HistoryScreen() {
      loadHistory();
     }, [])
   );
-  
-  // Test entry
-  const addTestHistory = async () => {
-  try {
-    const today = new Date().toISOString().split('T')[0]; // Get today's date
-    const testEntry = { date: today, completed: ["Test Habit 1", "Test Habit 2"] };
-
-    // Load existing history
-    let history = await AsyncStorage.getItem('habitHistory');
-    history = history ? JSON.parse(history) : [];
-
-    // Add new test entry
-    history.unshift(testEntry);
-    await AsyncStorage.setItem('habitHistory', JSON.stringify(history));
-
-    Alert.alert("Test Entry Added", "Check Look Back to see if history updates!");
-  } catch (error) {
-    console.error("Error adding test history:", error);
-  }
-};
 
   // Debugging function to manually check AsyncStorage
   const debugHistory = async () => {
@@ -73,11 +53,8 @@ export default function HistoryScreen() {
           )}
         />
       )}
-
       {/* Debug Button to Check History Data */}
       <Button title="Debug History" onPress={debugHistory} />
-      {/* Test entry */}
-      <Button title="Add Test History" onPress={addTestHistory} />
     </ScrollView>
   );
 }
