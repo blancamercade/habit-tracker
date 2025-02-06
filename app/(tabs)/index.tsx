@@ -17,22 +17,21 @@ export default function HomeScreen() {
   const [habits, setHabits] = useState(defaultHabits);
   const [lastResetDate, setLastResetDate] = useState('');
 
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        const storedHabits = await AsyncStorage.getItem('habits');
-        if (storedHabits) setHabits(JSON.parse(storedHabits));
-        // Check if history was reset and refresh
-        const habitsUpdated = await AsyncStorage.getItem('habitsUpdated');
-        if (habitsUpdated === 'true') {
-          setHabits(JSON.parse(storedHabits));
-          await AsyncStorage.removeItem('habitsUpdated'); // Reset flag
+  useFocusEffect(
+    useCallback(() => {
+      const loadData = async () => {
+        try {
+          const storedHabits = await AsyncStorage.getItem('habits');
+          if (storedHabits) setHabits(JSON.parse(storedHabits));
+        } catch (error) {
+          console.error("Failed to load habits:", error);
         }
-      } catch (error) {
-        console.error('Failed to load habits:', error);
-      }
-    };
-    loadData();
+      };
+  
+      loadData();
+    }, [])
+  );
+  
    const debugStorage = async () => {
       try {
         const history = await AsyncStorage.getItem('habitHistory');
