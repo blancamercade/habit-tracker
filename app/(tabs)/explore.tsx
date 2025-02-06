@@ -23,11 +23,21 @@ export default function HistoryScreen() {
   // Function to reset history
   const resetHistory = async () => {
     try {
+      // Clear history
       await AsyncStorage.removeItem('habitHistory');
-      setHistory([]); // Clear UI
-      alert("📖 Habit history has been reset!");
+      // Reset habits (set streaks to 0 and mark as incomplete)
+      const resetHabits = habits.map(habit => ({
+        ...habit,
+        completed: false,
+        streak: 0,
+      }));
+      setHabits(resetHabits); // Update UI
+      await AsyncStorage.setItem('habits', JSON.stringify(resetHabits));
+      // Clear reset date
+      await AsyncStorage.removeItem('lastResetDate');
+      alert("📖 Habit history and streaks have been reset!");
     } catch (error) {
-      console.error("❌ Error resetting history:", error);
+      console.error("❌ Error resetting history and streaks:", error);
     }
   };
 
