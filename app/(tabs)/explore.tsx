@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, ScrollView, Button, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function HistoryScreen() {
   const [history, setHistory] = useState([]); // Ensures history is always an array
 
-  useEffect(() => {
+  useFocusEffect(
+  React.useCallback(() => {
     const loadHistory = async () => {
       try {
         const storedHistory = await AsyncStorage.getItem('habitHistory');
-        console.log("Loaded History:", storedHistory); // Logs data for debugging
-        if (storedHistory) {
-          setHistory(JSON.parse(storedHistory));
-        }
+        setHistory(storedHistory ? JSON.parse(storedHistory) : []);
       } catch (error) {
-        console.error('Failed to load history:', error);
+        console.error("Error loading history:", error);
       }
-    };
-    loadHistory();
-  }, []);
+     };
+     loadHistory();
+    }, [])
+  );
   
   // Test entry
   const addTestHistory = async () => {
