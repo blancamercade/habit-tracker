@@ -45,7 +45,6 @@ export default function HomeScreen() {
     };
   
     debugStorage();
-  }, []);
 
   const toggleHabit = (id: string) => {
     setHabits(prevHabits =>
