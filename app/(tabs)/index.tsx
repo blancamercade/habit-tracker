@@ -45,6 +45,45 @@ export default function HomeScreen() {
     );
   };
 
+const logAndResetHabits = async () => {
+  try {
+    const today = new Date().toISOString().split('T')[0];
+
+    // Get completed habits
+    const completedHabits = habits.filter(habit => habit.completed).map(habit => habit.name);
+
+    if (completedHabits.length > 0) {
+      // Load existing history
+      let history = await AsyncStorage.getItem('habitHistory');
+      history = history ? JSON.parse(history) : [];
+
+      // Add new history entry
+      history.unshift({ date: today, completed: completedHabits });
+
+      // Save updated history
+      await AsyncStorage.setItem('habitHistory', JSON.stringify(history));
+    }
+
+    // Reset habits for the new day
+    const updatedHabits = habits.map(habit => ({
+      ...habit,
+      streak: habit.completed ? habit.streak + 1 : 0,
+      completed: false,
+    }));
+
+    setHabits(updatedHabits);
+    await AsyncStorage.setItem('habits', JSON.stringify(updatedHabits));
+
+    // Save new reset date
+    await AsyncStorage.setItem('lastResetDate', today);
+    setLastResetDate(today);
+
+    alert("Habits logged and reset for tomorrow!");
+  } catch (error) {
+    console.error("Error logging and resetting habits:", error);
+  }
+};
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Today's Habits</Text>
@@ -62,6 +101,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         )}
       />
+      <Button title="Log & Reset for Tomorrow" onPress={logAndResetHabits} />
     </View>
   );
 }
