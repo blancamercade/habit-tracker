@@ -2,7 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons'; // Import icons
 import HomeScreen from './index'; // Home screen
 import HistoryScreen from './explore'; // History screen
-import SetHabitsScreen from './SetHabits'; // New Set Habits screen
+import SetHabitsScreen from './sethabits'; // New Set Habits screen
 
 const Tab = createBottomTabNavigator();
 
