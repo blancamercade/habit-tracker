@@ -114,7 +114,7 @@ const logAndResetHabits = async () => {
           </TouchableOpacity>
         )}
       />
-      <Button title="Log & Reset for Tomorrow" onPress={logAndResetHabits} />
+      <Button title="Log & Reset for Tomorrow" onPress={logAndResetHabits}  color="#1B5E20" />
     </View>
   );
 }
