@@ -20,16 +20,14 @@ export default function HistoryScreen() {
     }, [])
   );
 
-  // Debugging function to manually check AsyncStorage
-  const debugHistory = async () => {
+  // Function to reset history
+  const resetHistory = async () => {
     try {
-      const storedHistory = await AsyncStorage.getItem('habitHistory');
-      Alert.alert(
-        "Habit History Debug",
-        `History Data: ${storedHistory || 'No history found'}`
-      );
+      await AsyncStorage.removeItem('habitHistory');
+      setHistory([]); // Clear UI
+      alert("📖 Habit history has been reset!");
     } catch (error) {
-      console.error('Error retrieving history:', error);
+      console.error("❌ Error resetting history:", error);
     }
   };
 
@@ -53,8 +51,8 @@ export default function HistoryScreen() {
           )}
         />
       )}
-      {/* Debug Button to Check History Data */}
-      <Button title="Debug History" onPress={debugHistory} />
+      {/* Button to clear history data */}
+      <Button title="Reset History" onPress={resetHistory} color="red" />
     </ScrollView>
   );
 }
