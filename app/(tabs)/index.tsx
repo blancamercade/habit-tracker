@@ -136,9 +136,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 15,
     marginVertical: 5,
-    width: 300,
     borderRadius: 10,
-    alignItems: 'center',
   },
   habitCompleted: {
     backgroundColor: '#c8e6c9',
