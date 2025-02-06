@@ -47,7 +47,7 @@ export default function HistoryScreen() {
 
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <Text style={styles.title}>Habit History</Text>
       
       {history.length === 0 ? (
@@ -64,12 +64,11 @@ export default function HistoryScreen() {
               ))}
             </View>
           )}
-          nestedScrollEnabled={true} // This prevents the nested error
         />
       )}
       {/* Button to clear history data */}
       <Button title="Reset History" onPress={resetHistory} color="red" />
-    </ScrollView>
+    </View>
   );
 }
 
