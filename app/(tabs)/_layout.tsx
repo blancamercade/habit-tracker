@@ -2,6 +2,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons'; // Import icons
 import HomeScreen from './index'; // Home screen
 import HistoryScreen from './explore'; // History screen
+import SetHabitsScreen from './SetHabits'; // New Set Habits screen
 
 const Tab = createBottomTabNavigator();
 
@@ -17,6 +18,8 @@ export default function Layout() {
             iconName = 'checkbox-outline'; // Icon for daily habits
           } else if (route.name === 'Look Back') {
             iconName = 'time-outline'; // Icon for reflecting
+          } else if (route.name === 'Set Habits') {
+            iconName = 'settings-outline'; // Icon for setting habits
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -25,6 +28,7 @@ export default function Layout() {
     >
       <Tab.Screen name="Today" component={HomeScreen} />
       <Tab.Screen name="Look Back" component={HistoryScreen} />
+      <Tab.Screen name="Set Habits" component={SetHabitsScreen} />
     </Tab.Navigator>
   );
 }
