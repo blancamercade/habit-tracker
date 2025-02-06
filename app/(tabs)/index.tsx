@@ -26,6 +26,15 @@ export default function HomeScreen() {
       }
     };
     loadData();
+    const debugStorage = async () => {
+      const history = await AsyncStorage.getItem('habitHistory');
+      console.log("Habit History:", JSON.parse(history));
+  
+      const lastReset = await AsyncStorage.getItem('lastResetDate');
+      console.log("Last Reset Date:", lastReset);
+    };
+  
+    debugStorage();
   }, []);
 
   const toggleHabit = (id: string) => {
