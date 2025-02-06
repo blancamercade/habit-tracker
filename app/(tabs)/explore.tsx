@@ -39,8 +39,6 @@ export default function HistoryScreen() {
       await AsyncStorage.setItem('habits', JSON.stringify(resetHabits));
       // Clear reset date
       await AsyncStorage.removeItem('lastResetDate');
-      // Notify the Today screen that habits have changed
-    await AsyncStorage.setItem('habitsUpdated', 'true');
       alert("📖 Habit history and streaks have been reset!");
     } catch (error) {
       console.error("❌ Error resetting history and streaks:", error);
