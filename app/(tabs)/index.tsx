@@ -22,6 +22,12 @@ export default function HomeScreen() {
       try {
         const storedHabits = await AsyncStorage.getItem('habits');
         if (storedHabits) setHabits(JSON.parse(storedHabits));
+        // Check if history was reset and refresh
+        const habitsUpdated = await AsyncStorage.getItem('habitsUpdated');
+        if (habitsUpdated === 'true') {
+          setHabits(JSON.parse(storedHabits));
+          await AsyncStorage.removeItem('habitsUpdated'); // Reset flag
+        }
       } catch (error) {
         console.error('Failed to load habits:', error);
       }
