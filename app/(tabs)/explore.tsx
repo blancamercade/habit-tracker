@@ -67,7 +67,7 @@ export default function HistoryScreen() {
         />
       )}
       {/* Button to clear history data */}
-      <Button title="Reset History" onPress={resetHistory} color="red" />
+      <Button title="Reset History" onPress={resetHistory} color="#D32F2F" />
     </View>
   );
 }
@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 16,
     color: 'gray',
+    padding: 15,
   },
   historyItem: {
     backgroundColor: 'white',
