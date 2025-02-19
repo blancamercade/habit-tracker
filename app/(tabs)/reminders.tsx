@@ -37,7 +37,7 @@ async function scheduleNotification(time: Date, message: string) {
   const trigger = new Date(time);
   trigger.setSeconds(0); // Ensure it triggers exactly at the minute
 
-  console.log(`⏰ Scheduling for: ${trigger.toLocaleString()}`);
+  console.log(`⏰ Scheduling for: ${trigger.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
 
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -50,7 +50,7 @@ async function scheduleNotification(time: Date, message: string) {
     },
   });
 
-  Alert.alert("Reminder Set", `A notification has been set up for ${trigger.toLocaleTimeString()} every day.`);
+  Alert.alert("Reminder Set", `A notification has been set up for ${trigger.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} every day.`);
   console.log("🎉 Scheduled Notification Successfully!");
 }
 
@@ -124,7 +124,7 @@ const RemindersScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Set Reminder Time:</Text>
-      <Button title={time.toLocaleTimeString()} onPress={() => setShowPicker(true)} />
+      <Button title={time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} onPress={() => setShowPicker(true)} />
       {showPicker && (
         <DateTimePicker
           value={time}
