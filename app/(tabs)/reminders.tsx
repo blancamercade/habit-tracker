@@ -61,19 +61,19 @@ async function testImmediateNotification() {
     return;
   }
 
-  console.log("✅ Permission granted. Sending test notification...");
-  
-  await Notifications.scheduleNotificationAsync({
+  console.log("✅ Permission granted. Sending immediate notification...");
+
+  await Notifications.presentNotificationAsync({
     content: {
-      title: "Test Notification",
-      body: "This is an immediate test!",
+      title: "Immediate Notification",
+      body: "This is an instant test!",
       sound: "default",
     },
-    trigger: { seconds: 5 },
   });
-
-  console.log("🎉 Test Notification Scheduled!");
+  console.log("🎉 Immediate Notification Sent!");
 }
+
+
 const RemindersScreen = () => {
   const [time, setTime] = useState(new Date());
   const [message, setMessage] = useState('');
