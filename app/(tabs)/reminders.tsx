@@ -23,16 +23,23 @@ async function requestPermissions() {
 
 // Schedule Notification
 async function scheduleNotification(time: Date, message: string) {
+  console.log("✅ Attempting to schedule notification...");
+
   const hasPermission = await requestPermissions();
-  if (!hasPermission) return;
+  if (!hasPermission) {
+    console.log("❌ Notification permission denied.");
+    return;
+  }
 
-  await Notifications.cancelAllScheduledNotificationsAsync(); // Clear previous reminders
+  console.log("🔄 Canceling existing notifications...");
+  await Notifications.cancelAllScheduledNotificationsAsync();
 
+  console.log(`⏰ Scheduling for: ${time.toLocaleTimeString()}`);
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Habit Reminder",
       body: message,
-      sound: true,
+      sound: "default",
     },
     trigger: {
       hour: time.getHours(),
@@ -41,7 +48,7 @@ async function scheduleNotification(time: Date, message: string) {
     },
   });
 
-  Alert.alert("Reminder Set", `Your reminder is set for ${time.toLocaleTimeString()}`);
+  console.log("🎉 Notification scheduled successfully!");
 }
 
 const RemindersScreen = () => {
