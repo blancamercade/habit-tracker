@@ -70,7 +70,6 @@ export default function HistoryScreen() {
       <TouchableOpacity style={styles.resetButton} onPress={resetHistory}>
         <Text style={styles.resetButtonText}>Reset history</Text>
       </TouchableOpacity>
-      <Button title="Reset History" onPress={resetHistory} color="#D32F2F" />
     </View>
   );
 }
