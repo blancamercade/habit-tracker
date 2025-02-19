@@ -53,6 +53,16 @@ async function scheduleNotification(time: Date, message: string) {
 
 // Test immediate notification
 async function testImmediateNotification() {
+  const { status } = await Notifications.getPermissionsAsync();
+  console.log("🔍 Notification Permission Status:", status);
+
+  if (status !== 'granted') {
+    Alert.alert("Notification Permission Denied", "Please enable notifications in settings.");
+    return;
+  }
+
+  console.log("✅ Permission granted. Sending test notification...");
+  
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Test Notification",
@@ -61,8 +71,9 @@ async function testImmediateNotification() {
     },
     trigger: { seconds: 5 },
   });
-}
 
+  console.log("🎉 Test Notification Scheduled!");
+}
 const RemindersScreen = () => {
   const [time, setTime] = useState(new Date());
   const [message, setMessage] = useState('');
