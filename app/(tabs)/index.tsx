@@ -114,7 +114,9 @@ const logAndResetHabits = async () => {
           </TouchableOpacity>
         )}
       />
-      <Button title="Log & Reset for Tomorrow" onPress={logAndResetHabits}  color="#1B5E20" />
+      <TouchableOpacity style={styles.logButton} onPress={logAndResetHabits}>
+        <Text style={styles.logButtonText}>Log & Reset for tomorrow</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -147,5 +149,16 @@ const styles = StyleSheet.create({
   habitTextCompleted: {
     textDecorationLine: 'line-through',
     color: 'gray',
+  },
+  logButton: {
+    backgroundColor: "#1B5E20",
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  logButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
