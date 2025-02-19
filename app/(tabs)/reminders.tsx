@@ -124,7 +124,7 @@ const RemindersScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Set Reminder Time:</Text>
-      <Button title={time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} onPress={() => setShowPicker(true)} />
+      <Button title={time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} onPress={() => setShowPicker(true)} color="#1B5E20"/>
       {showPicker && (
         <DateTimePicker
           value={time}
@@ -145,8 +145,8 @@ const RemindersScreen = () => {
         placeholder="Enter reminder message"
       />
 
-      <Button title="Save Reminder" onPress={handleSaveReminder} />
-      <Button title="Test Notification" onPress={testImmediateNotification} color="green" />
+      <Button title="Save Reminder" onPress={handleSaveReminder} color="#1B5E20"/>
+      <Button title="Test Notification" onPress={testImmediateNotification} color="#1B5E20" />
     </View>
   );
 };
