@@ -123,8 +123,8 @@ const RemindersScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Set Reminder Time:</Text>
-      <Button title={time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} onPress={() => setShowPicker(true)} color="#1B5E20"/>
+      <Text style={styles.title}>Set a Reminder</Text>
+      <Button title={time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} onPress={() => setShowPicker(true)} style={styles.input}/>
       {showPicker && (
         <DateTimePicker
           value={time}
@@ -136,8 +136,7 @@ const RemindersScreen = () => {
           }}
         />
       )}
-
-      <Text style={styles.title}>Reminder Message:</Text>
+      
       <TextInput
         style={styles.input}
         value={message}
@@ -145,7 +144,10 @@ const RemindersScreen = () => {
         placeholder="Enter reminder message"
       />
 
-      <Button title="Save Reminder" onPress={handleSaveReminder} color="#1B5E20"/>
+      <Button title="Save Reminder" onPress={handleSaveReminder} color="#1B5E20" />
+
+
+      
       <Button title="Test Notification" onPress={testImmediateNotification} color="#1B5E20" />
     </View>
   );
@@ -166,11 +168,13 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
+    borderColor: "#BDBDBD",
+    borderRadius: 10,
     padding: 10,
+    fontSize: 16,
     marginTop: 10,
-    borderRadius: 5,
-    backgroundColor: 'white',
-    borderColor: '#ccc',
+    marginBottom: 10,
+    backgroundColor: "#FFFFFF",
   },
 });
 
