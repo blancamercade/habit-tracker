@@ -144,11 +144,11 @@ const RemindersScreen = () => {
         placeholder="Enter reminder message"
       />
 
-      <Button title="Save Reminder" onPress={handleSaveReminder} color="#1B5E20" />
+      <Button title="Save Reminder" onPress={handleSaveReminder} color="#1B5E20" marginBottom=10 />
 
 
       
-      <Button title="Test Notification" onPress={testImmediateNotification} color="#1B5E20" />
+      <Button title="Test Notification" onPress={testImmediateNotification} color="#1B5E20" marginBottom=10 />
     </View>
   );
 };
@@ -161,10 +161,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
   },
   title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    color: '#333',
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    textAlign: "center",
   },
   input: {
     borderWidth: 1,
