@@ -124,6 +124,19 @@ const RemindersScreen = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Set a Reminder</Text>
+
+      <TouchableOpacity title={time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} onPress={() => setShowPicker(true)} style={styles.input}>
+        {showPicker && (
+        <DateTimePicker
+          value={time}
+          mode="time"
+          display="default"
+          onChange={(event, selectedTime) => {
+            setShowPicker(false);
+            if (selectedTime) setTime(selectedTime);
+          }}
+      </TouchableOpacity>
+      
       <Button title={time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} onPress={() => setShowPicker(true)} style={styles.input}/>
       {showPicker && (
         <DateTimePicker
