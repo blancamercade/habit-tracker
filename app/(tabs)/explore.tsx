@@ -67,6 +67,9 @@ export default function HistoryScreen() {
         />
       )}
       {/* Button to clear history data */}
+      <TouchableOpacity style={styles.resetButton} onPress={resetHistory}>
+        <Text style={styles.resetButtonText}>Reset history</Text>
+      </TouchableOpacity>
       <Button title="Reset History" onPress={resetHistory} color="#D32F2F" />
     </View>
   );
@@ -105,5 +108,16 @@ const styles = StyleSheet.create({
   habit: {
     fontSize: 14,
     color: 'gray',
+  },
+  resetButton: {
+    backgroundColor: 'red',
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  resetButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
