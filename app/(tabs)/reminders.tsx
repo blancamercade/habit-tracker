@@ -51,6 +51,18 @@ async function scheduleNotification(time: Date, message: string) {
   console.log("🎉 Notification scheduled successfully!");
 }
 
+// Test immediate notification
+async function testImmediateNotification() {
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Test Notification",
+      body: "This is an immediate test!",
+      sound: "default",
+    },
+    trigger: { seconds: 5 },
+  });
+}
+
 const RemindersScreen = () => {
   const [time, setTime] = useState(new Date());
   const [message, setMessage] = useState('');
@@ -120,6 +132,7 @@ const RemindersScreen = () => {
       />
 
       <Button title="Save Reminder" onPress={handleSaveReminder} />
+      <Button title="Test Notification" onPress={testImmediateNotification} color="green" />
     </View>
   );
 };
