@@ -67,23 +67,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#E0F7FA",
+    backgroundColor: '#f5f5f5',
+    paddingTop: 50,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     textAlign: "center",
-    color: "#00796B",
   },
   habitItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    backgroundColor: "#FFF9C4",
+    backgroundColor: 'white',
     padding: 15,
+    marginVertical: 5,
     borderRadius: 10,
-    marginBottom: 10,
   },
   habitText: {
     fontSize: 18,
