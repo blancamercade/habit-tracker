@@ -81,6 +81,9 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 5,
     borderRadius: 10,
+    flexDirection: "row",  // Align items horizontally
+    justifyContent: "space-between", // Push items to the edges
+    alignItems: "center", // Align vertically in the center
   },
   habitText: {
     fontSize: 18,
