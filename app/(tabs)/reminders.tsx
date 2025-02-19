@@ -144,11 +144,11 @@ const RemindersScreen = () => {
         placeholder="Enter reminder message"
       />
 
-      <Button title="Save Reminder" onPress={handleSaveReminder} color="#1B5E20" marginBottom=10 />
+      <Button title="Save Reminder" onPress={handleSaveReminder} color="#1B5E20" marginBottom="10" />
 
 
       
-      <Button title="Test Notification" onPress={testImmediateNotification} color="#1B5E20" marginBottom=10 />
+      <Button title="Test Notification" onPress={testImmediateNotification} color="#1B5E20" marginBottom="10" />
     </View>
   );
 };
