@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Alert, Platform } from 'react-native';
+import { View, Text, TextInput, Button, Alert, Platform, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
@@ -89,8 +89,8 @@ const RemindersScreen = () => {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20, justifyContent: 'center' }}>
-      <Text style={{ fontSize: 18, marginBottom: 10 }}>Set Reminder Time:</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Set Reminder Time:</Text>
       <Button title={time.toLocaleTimeString()} onPress={() => setShowPicker(true)} />
       {showPicker && (
         <DateTimePicker
@@ -104,17 +104,40 @@ const RemindersScreen = () => {
         />
       )}
 
-      <Text style={{ fontSize: 18, marginTop: 20 }}>Reminder Message:</Text>
+      <Text style={styles.title}>Reminder Message:</Text>
       <TextInput
-        style={{ borderWidth: 1, padding: 10, marginTop: 10, borderRadius: 5 }}
+        style={styles.input}
         value={message}
         onChangeText={setMessage}
         placeholder="Enter reminder message"
       />
 
-      <Button title="Save Reminder" onPress={handleSaveReminder} style={{ marginTop: 20 }} />
+      <Button title="Save Reminder" onPress={handleSaveReminder} />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'center',
+    backgroundColor: '#f5f5f5',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
+  },
+  input: {
+    borderWidth: 1,
+    padding: 10,
+    marginTop: 10,
+    borderRadius: 5,
+    backgroundColor: 'white',
+    borderColor: '#ccc',
+  },
+});
 
 export default RemindersScreen;
