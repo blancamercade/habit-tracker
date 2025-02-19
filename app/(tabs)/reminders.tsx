@@ -152,7 +152,10 @@ const RemindersScreen = () => {
         <Text style={styles.savereminderButtonText}>Set reminder</Text>
       </TouchableOpacity>
       
-      <Button title="Test Notification" onPress={testImmediateNotification} color="#1B5E20" marginBottom="10" />
+      <TouchableOpacity style={styles.savereminderButton} onPress={testImmediateNotification}>
+        <Text style={styles.savereminderButtonText}>Test notification</Text>
+      </TouchableOpacity>
+      
     </View>
   );
 };
