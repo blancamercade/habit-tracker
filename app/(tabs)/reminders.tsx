@@ -126,7 +126,7 @@ const RemindersScreen = () => {
       <Text style={styles.title}>Set a Reminder</Text>
 
       <TouchableOpacity onPress={() => setShowPicker(true)} style={styles.input}>
-        <Text>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
+        <Text style={styles.input}>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
       </TouchableOpacity>
       
       {showPicker && (
@@ -176,7 +176,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
     fontSize: 16,
-    marginTop: 10,
     marginBottom: 10,
     backgroundColor: "#FFFFFF",
   },
