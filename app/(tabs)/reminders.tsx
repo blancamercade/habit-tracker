@@ -144,9 +144,9 @@ const RemindersScreen = () => {
         placeholder="Enter reminder message"
       />
 
-      <Button title="Save Reminder" onPress={handleSaveReminder} color="#1B5E20" marginBottom="10" />
-
-
+      <TouchableOpacity style={styles.savereminderButton} onPress={handleSaveReminder}>
+        <Text style={styles.savereminderButtonText}>Set reminder</Text>
+      </TouchableOpacity>
       
       <Button title="Test Notification" onPress={testImmediateNotification} color="#1B5E20" marginBottom="10" />
     </View>
@@ -175,6 +175,18 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     backgroundColor: "#FFFFFF",
+  },
+  savereminderButton: {
+    backgroundColor: "#1B5E20",
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  savereminderButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
