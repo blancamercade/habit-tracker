@@ -58,6 +58,20 @@ const RemindersScreen = () => {
     })();
   }, []);
 
+  useEffect(() => {
+    async function checkPermissions() {
+      const { status } = await Notifications.getPermissionsAsync();
+      if (status !== 'granted') {
+        const { status: newStatus } = await Notifications.requestPermissionsAsync();
+        Alert.alert('Permission Status', `New Status: ${newStatus}`);
+      } else {
+        Alert.alert('Permission Status', 'Notifications are already enabled');
+      }
+    }
+
+    checkPermissions();
+  }, []);
+
   const handleSaveReminder = async () => {
     if (!message.trim()) {
       Alert.alert("Error", "Please enter a reminder message.");
