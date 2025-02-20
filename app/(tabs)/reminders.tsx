@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, Alert, Platform, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Alert, TouchableOpacity, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
@@ -21,7 +21,7 @@ async function requestPermissions() {
   return false;
 }
 
-// Schedule Notification
+// Schedule Daily Reminder Notification
 async function scheduleNotification(time: Date, message: string) {
   console.log("✅ Attempting to schedule notification...");
 
@@ -34,10 +34,13 @@ async function scheduleNotification(time: Date, message: string) {
   console.log("🔄 Canceling existing notifications...");
   await Notifications.cancelAllScheduledNotificationsAsync();
 
-  const trigger = new Date(time);
-  trigger.setSeconds(0); // Ensure it triggers exactly at the minute
+  const trigger = {
+    hour: time.getHours(),
+    minute: time.getMinutes(),
+    repeats: true, // Ensures daily repetition
+  };
 
-  console.log(`⏰ Scheduling for: ${trigger.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+  console.log(`⏰ Scheduling for: ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
 
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -45,26 +48,21 @@ async function scheduleNotification(time: Date, message: string) {
       body: message,
       sound: "default",
     },
-    trigger: { 
-      seconds: (trigger.getTime() - Date.now()) / 1000, // Schedule based on actual timestamp
-    },
+    trigger,
   });
 
-  Alert.alert("Reminder Set", `A notification has been set up for ${trigger.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} every day.`);
+  Alert.alert("Reminder Set", `Your reminder is set for ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} every day.`);
   console.log("🎉 Scheduled Notification Successfully!");
 }
 
-// Test immediate notification
+// Test Immediate Notification
 async function testImmediateNotification() {
-  const { status } = await Notifications.getPermissionsAsync();
-  console.log("🔍 Notification Permission Status:", status);
-
-  if (status !== 'granted') {
-    Alert.alert("Notification Permission Denied", "Please enable notifications in settings.");
+  const hasPermission = await requestPermissions();
+  if (!hasPermission) {
     return;
   }
 
-  console.log("✅ Permission granted. Sending immediate notification...");
+  console.log("✅ Sending immediate notification...");
 
   await Notifications.presentNotificationAsync({
     content: {
@@ -72,6 +70,7 @@ async function testImmediateNotification() {
       body: "This is an instant test!",
       sound: "default",
     },
+    trigger: null, // No trigger needed for instant notifications
   });
 
   console.log("🎉 Immediate Notification Sent!");
@@ -82,6 +81,7 @@ const RemindersScreen = () => {
   const [message, setMessage] = useState('');
   const [showPicker, setShowPicker] = useState(false);
 
+  // Load stored reminder
   useEffect(() => {
     (async () => {
       const storedTime = await AsyncStorage.getItem('reminderTime');
@@ -91,26 +91,12 @@ const RemindersScreen = () => {
     })();
   }, []);
 
-  useEffect(() => {
-    async function checkPermissions() {
-      const { status } = await Notifications.getPermissionsAsync();
-      if (status !== 'granted') {
-        const { status: newStatus } = await Notifications.requestPermissionsAsync();
-        Alert.alert('Permission Status', `New Status: ${newStatus}`);
-      } else {
-        Alert.alert('Permission Status', 'Notifications are already enabled');
-      }
-    }
-
-    checkPermissions();
-  }, []);
-
   const handleSaveReminder = async () => {
     if (!message.trim()) {
       Alert.alert("Error", "Please enter a reminder message.");
       return;
     }
-    
+
     try {
       await AsyncStorage.setItem('reminderTime', time.toISOString());
       await AsyncStorage.setItem('reminderMessage', message);
@@ -128,7 +114,7 @@ const RemindersScreen = () => {
       <TouchableOpacity onPress={() => setShowPicker(true)}>
         <Text style={styles.input}>{time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</Text>
       </TouchableOpacity>
-      
+
       {showPicker && (
         <DateTimePicker
           value={time}
@@ -140,7 +126,7 @@ const RemindersScreen = () => {
           }}
         />
       )}
-      
+
       <TextInput
         style={styles.input}
         value={message}
@@ -149,13 +135,13 @@ const RemindersScreen = () => {
       />
 
       <TouchableOpacity style={styles.savereminderButton} onPress={handleSaveReminder}>
-        <Text style={styles.savereminderButtonText}>Set reminder</Text>
+        <Text style={styles.savereminderButtonText}>Set Reminder</Text>
       </TouchableOpacity>
-      
+
       <TouchableOpacity style={styles.savereminderButton} onPress={testImmediateNotification}>
-        <Text style={styles.savereminderButtonText}>Test notification</Text>
+        <Text style={styles.savereminderButtonText}>Test Notification</Text>
       </TouchableOpacity>
-      
+
     </View>
   );
 };
@@ -181,6 +167,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 10,
     backgroundColor: "#FFFFFF",
+    textAlign: 'center',
   },
   savereminderButton: {
     backgroundColor: "#1B5E20",
