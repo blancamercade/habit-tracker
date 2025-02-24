@@ -61,7 +61,9 @@ async function scheduleNotification(time: Date, message: string) {
       body: message || "Time to complete your habit!",
       sound: "default",
     },
-    trigger: { date: triggerTime }, // ✅ Use absolute date instead of seconds
+    trigger: {
+      type: Notifications.SchedulableTriggerInputTypes.DATE, // ✅ Explicitly set trigger type
+      date: triggerTime, 
   });
 
   Alert.alert("Reminder Set", `Notification scheduled for ${triggerTime.toLocaleString()}`);
