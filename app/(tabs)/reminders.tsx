@@ -24,6 +24,10 @@ async function requestPermissions() {
 // ✅ Sets up a notification channel on Android
 async function setupNotificationChannel() {
   if (Platform.OS === 'android') {
+    console.log("🔍 Fetching existing notification channels...");
+    const existingChannels = await Notifications.getNotificationChannelsAsync();
+    console.log("📢 Before Setup - Available Notification Channels:", existingChannels);
+
     await Notifications.setNotificationChannelAsync('habit-reminders', {
       name: 'Habit Reminders',
       importance: Notifications.AndroidImportance.HIGH,
@@ -31,9 +35,8 @@ async function setupNotificationChannel() {
       enableVibrate: true,
     });
 
-    // ✅ Debugging: Log all channels
-    const channels = await Notifications.getNotificationChannelsAsync();
-    console.log("📢 Available Notification Channels:", channels);
+    const updatedChannels = await Notifications.getNotificationChannelsAsync();
+    console.log("📢 After Setup - Available Notification Channels:", updatedChannels);
   }
 }
 
