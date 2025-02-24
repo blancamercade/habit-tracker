@@ -4,6 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 
 // Request notification permissions
 async function requestPermissions() {
@@ -21,7 +22,21 @@ async function requestPermissions() {
   return false;
 }
 
+// Sets up a notification channel
+async function setupNotificationChannel() {
+  if (Platform.OS === 'android') {
+    await Notifications.setNotificationChannelAsync('habit-reminders', {
+      name: 'Habit Reminders',
+      importance: Notifications.AndroidImportance.HIGH,
+      sound: 'default',
+      enableVibrate: true,
+    });
+    console.log("✅ Notification channel set up.");
+  }
+}
+
 // Schedule Daily Reminder Notification
+
 async function scheduleNotification(time: Date, message: string) {
   console.log("✅ Attempting to schedule notification...");
 
@@ -34,11 +49,10 @@ async function scheduleNotification(time: Date, message: string) {
   console.log("🔄 Canceling existing notifications...");
   await Notifications.cancelAllScheduledNotificationsAsync();
 
-  // Set trigger for the exact time every day
   const trigger = {
     hour: time.getHours(),
     minute: time.getMinutes(),
-    repeats: true, // Repeat every day at the set time
+    repeats: true,
   };
 
   console.log(`⏰ Scheduling for: ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
@@ -48,12 +62,17 @@ async function scheduleNotification(time: Date, message: string) {
       title: "Habit Reminder",
       body: message || "Time to complete your habit!",
       sound: "default",
+      android: { channelId: 'habit-reminders' }, // ✅ Use the notification channel
     },
     trigger,
   });
 
-  // Debugging: Log all scheduled notifications
   const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
+  console.log("📋 Scheduled Notifications:", scheduledNotifications);
+}
+
+// Debugging: Log all scheduled notifications
+const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
   console.log("📋 Scheduled Notifications:", scheduledNotifications);
 
   Alert.alert("Reminder Set", `Your reminder is set for ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} every day.`);
@@ -102,6 +121,7 @@ const RemindersScreen = () => {
 
   // Load stored reminder
   useEffect(() => {
+    setupNotificationChannel();
     (async () => {
       const storedTime = await AsyncStorage.getItem('reminderTime');
       const storedMessage = await AsyncStorage.getItem('reminderMessage');
