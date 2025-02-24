@@ -85,6 +85,8 @@ async function scheduleNotification(time: Date, message: string) {
 
 // ✅ Test Immediate Notification
 async function testImmediateNotification() {
+  await setupNotificationChannel(); // ✅ Ensure the channel is set
+
   const hasPermission = await requestPermissions();
   if (!hasPermission) {
     return;
@@ -98,14 +100,19 @@ async function testImmediateNotification() {
       body: "This is an instant test!",
       sound: "default",
       android: {
-        channelId: 'habit-reminders', // ✅ Ensures notification appears
+        channelId: 'habit-reminders', // ✅ Force usage of the correct channel
       },
     },
     trigger: { seconds: 1 }, // ✅ Fire in 1 second
   });
 
+  // ✅ Check if the notification is scheduled correctly
+  const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
+  console.log("📋 Scheduled Notifications After Test:", scheduledNotifications);
+
   console.log("🎉 Immediate Notification Sent!");
 }
+
 
 // ✅ Main Component
 const RemindersScreen = () => {
