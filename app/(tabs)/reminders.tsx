@@ -61,6 +61,8 @@ async function scheduleNotification(time: Date, message: string) {
 }
 
 // Test Immediate Notification
+import * as Notifications from 'expo-notifications';
+
 async function testImmediateNotification() {
   const hasPermission = await requestPermissions();
   if (!hasPermission) {
@@ -68,6 +70,16 @@ async function testImmediateNotification() {
   }
 
   console.log("✅ Sending immediate notification...");
+
+  // Set up a listener to see if the notification is actually received
+  Notifications.addNotificationReceivedListener(notification => {
+    console.log("📩 Notification received:", notification);
+  });
+
+  // Set up a listener to check if the user interacts with the notification
+  Notifications.addNotificationResponseReceivedListener(response => {
+    console.log("🎯 Notification clicked:", response);
+  });
 
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -80,6 +92,7 @@ async function testImmediateNotification() {
 
   console.log("🎉 Immediate Notification Sent!");
 }
+
 
 
 const RemindersScreen = () => {
