@@ -69,16 +69,18 @@ async function testImmediateNotification() {
 
   console.log("✅ Sending immediate notification...");
 
-  await Notifications.presentNotificationAsync({
+  await Notifications.scheduleNotificationAsync({
     content: {
       title: "Immediate Notification",
       body: "This is an instant test!",
       sound: "default",
     },
-    trigger: null, // No trigger needed for instant notifications
+    trigger: { seconds: 1 }, // Fire in 1 second
   });
+
   console.log("🎉 Immediate Notification Sent!");
 }
+
 
 const RemindersScreen = () => {
   const [time, setTime] = useState(new Date());
