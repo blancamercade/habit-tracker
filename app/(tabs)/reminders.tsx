@@ -44,8 +44,7 @@ async function setupNotificationChannel() {
 async function scheduleNotification(time: Date, message: string) {
   console.log("✅ Attempting to schedule notification...");
 
-  // ✅ Ensure the notification channel is set up
-  await setupNotificationChannel();
+  await setupNotificationChannel(); // ✅ Ensure channel exists
 
   const hasPermission = await requestPermissions();
   if (!hasPermission) {
@@ -70,22 +69,22 @@ async function scheduleNotification(time: Date, message: string) {
       body: message || "Time to complete your habit!",
       sound: "default",
       android: {
-        channelId: 'habit-reminders', // ✅ Ensures notification uses the correct channel
+        channelId: 'habit-reminders', // ✅ Force correct channel
+        priority: Notifications.AndroidNotificationPriority.HIGH, 
+        vibrate: [500, 500, 500], // ✅ Ensure vibration for visibility
       },
     },
     trigger,
   });
 
-  // ✅ Debugging: Log scheduled notifications
   const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
-  console.log("📋 Scheduled Notifications:", scheduledNotifications);
-
-  Alert.alert("Reminder Set", `Your reminder is set for ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} every day.`);
+  console.log("📋 Scheduled Notifications After Setting Reminder:", scheduledNotifications);
 }
+
 
 // ✅ Test Immediate Notification
 async function testImmediateNotification() {
-  await setupNotificationChannel(); // ✅ Ensure the channel is set
+  await setupNotificationChannel(); // ✅ Ensure channel is created
 
   const hasPermission = await requestPermissions();
   if (!hasPermission) {
@@ -100,7 +99,9 @@ async function testImmediateNotification() {
       body: "This is an instant test!",
       sound: "default",
       android: {
-        channelId: 'habit-reminders', // ✅ Force usage of the correct channel
+        channelId: 'habit-reminders', // ✅ FORCE the correct channel
+        priority: Notifications.AndroidNotificationPriority.HIGH, 
+        vibrate: [500, 500, 500], // ✅ Ensure vibration for visibility
       },
     },
     trigger: { seconds: 1 }, // ✅ Fire in 1 second
