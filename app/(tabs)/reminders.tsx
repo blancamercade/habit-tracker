@@ -37,28 +37,23 @@ async function scheduleNotification(time: Date, message: string) {
   if (!hasPermission) return;
   
   const now = new Date();
-    let triggerTime = new Date(time);
-  
-    // ✅ Ensure the notification is set for the future
-    if (triggerTime <= now) {
-      triggerTime.setDate(triggerTime.getDate() + 1); // Move to the next day if time has passed
-    }
-  
-    const secondsUntilTrigger = Math.floor((triggerTime.getTime() - now.getTime()) / 1000);
-  
-    console.log(`⏰ Notification scheduled for ${triggerTime.toLocaleTimeString()} (${secondsUntilTrigger} seconds from now)`);
-  
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Habit Reminder",
-        body: message || "Time to complete your habit!",
-        sound: "default",
-      },
-      trigger: { seconds: secondsUntilTrigger },
-    });
-  
-    Alert.alert("Reminder Set", `Notification scheduled for ${triggerTime.toLocaleTimeString()}`);
-  }
+  let triggerTime = new Date(time);
+
+  const secondsUntilTrigger = Math.floor((triggerTime.getTime() - now.getTime()) / 1000);
+
+  console.log(`⏰ Notification scheduled for ${triggerTime.toLocaleTimeString()} (${secondsUntilTrigger} seconds from now)`);
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Habit Reminder",
+      body: message || "Time to complete your habit!",
+      sound: "default",
+    },
+    trigger: { seconds: secondsUntilTrigger },
+  });
+
+  Alert.alert("Reminder Set", `Notification scheduled for ${triggerTime.toLocaleTimeString()}`);
+}
 
 
 // ✅ Test an immediate notification
@@ -82,7 +77,12 @@ async function testImmediateNotification() {
 
 // ✅ Main Component
 const RemindersScreen = () => {
-  const [time, setTime] = useState(new Date());
+  const [time, setTime] = useState(() => {
+    const now = new Date();
+    now.setSeconds(0);
+    now.setMilliseconds(0);
+    return now;
+  });
   const [message, setMessage] = useState('');
   const [showPicker, setShowPicker] = useState(false);
 
@@ -128,7 +128,20 @@ const RemindersScreen = () => {
           display="default"
           onChange={(event, selectedTime) => {
             setShowPicker(false);
-            if (selectedTime) setTime(selectedTime);
+            if (selectedTime) {
+              // ✅ Preserve today's date, only update the hours and minutes
+              const now = new Date(); // ✅ Get current time inside the function
+              const newTime = new Date();
+              newTime.setHours(selectedTime.getHours());
+              newTime.setMinutes(selectedTime.getMinutes());
+              newTime.setSeconds(0);
+              newTime.setMilliseconds(0);
+              // ✅ If the selected time is in the past today, move it to tomorrow
+              if (newTime <= now) {
+                newTime.setDate(newTime.getDate() + 1);
+              }
+              setTime(newTime); // ✅ Now `time` contains the correct full date and is in the future
+            }
           }}
         />
       )}
