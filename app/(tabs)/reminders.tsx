@@ -30,15 +30,21 @@ async function setupNotificationChannel() {
       sound: 'default',
       enableVibrate: true,
     });
+
+    // ✅ Debugging: Log all channels
+    const channels = await Notifications.getNotificationChannelsAsync();
+    console.log("📢 Available Notification Channels:", channels);
+
     console.log("✅ Notification channel set up.");
   }
 }
+
 
 // ✅ Schedule Daily Reminder Notification
 async function scheduleNotification(time: Date, message: string) {
   console.log("✅ Attempting to schedule notification...");
 
-  // ✅ Ensure the notification channel is set up
+  // ✅ Ensure the notification channel is set up and logged
   await setupNotificationChannel();
 
   const hasPermission = await requestPermissions();
@@ -53,7 +59,7 @@ async function scheduleNotification(time: Date, message: string) {
   const trigger = {
     hour: time.getHours(),
     minute: time.getMinutes(),
-    repeats: true, // ✅ Makes sure it repeats daily
+    repeats: true,
   };
 
   console.log(`⏰ Scheduling for: ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
@@ -63,40 +69,15 @@ async function scheduleNotification(time: Date, message: string) {
       title: "Habit Reminder",
       body: message || "Time to complete your habit!",
       sound: "default",
-      android: { channelId: 'habit-reminders' }, // ✅ Ensure the notification uses the correct channel
+      android: {
+        channelId: 'habit-reminders', // ✅ Force Expo to use this channel
+      },
     },
     trigger,
   });
 
-  // ✅ Debugging: Log scheduled notifications
   const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
   console.log("📋 Scheduled Notifications:", scheduledNotifications);
-
-  Alert.alert("Reminder Set", `Your reminder is set for ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} every day.`);
-  console.log("🎉 Scheduled Notification Successfully!");
-}
-
-
-// ✅ Test Immediate Notification
-async function testImmediateNotification() {
-  const hasPermission = await requestPermissions();
-  if (!hasPermission) {
-    return;
-  }
-
-  console.log("✅ Sending immediate notification...");
-
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "Immediate Notification",
-      body: "This is an instant test!",
-      sound: "default",
-      android: { channelId: 'habit-reminders' }, // ✅ Now it uses the notification channel
-    },
-    trigger: { seconds: 1 }, // ✅ Fire in 1 second
-  });
-
-  console.log("🎉 Immediate Notification Sent!");
 }
 
 const RemindersScreen = () => {
