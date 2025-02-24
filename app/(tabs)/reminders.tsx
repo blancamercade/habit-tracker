@@ -114,7 +114,7 @@ async function scheduleDailyNotification() {
   await Notifications.cancelAllScheduledNotificationsAsync(); // Clears old schedules
 
   // Calculate the next trigger date for 00:16
-  const triggerDate = getNextTriggerDate(00, 16);
+  const triggerDate = getNextTriggerDate(00, 18);
 
   await Notifications.scheduleNotificationAsync({
     content: {
