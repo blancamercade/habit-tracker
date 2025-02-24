@@ -61,7 +61,7 @@ async function scheduleNotification(time: Date, message: string) {
 }
 
 // Test Immediate Notification
-import * as Notifications from 'expo-notifications';
+
 
 async function testImmediateNotification() {
   const hasPermission = await requestPermissions();
