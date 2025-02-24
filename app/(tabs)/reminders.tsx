@@ -38,6 +38,9 @@ async function setupNotificationChannel() {
 async function scheduleNotification(time: Date, message: string) {
   console.log("✅ Attempting to schedule notification...");
 
+  // ✅ Ensure the notification channel is set up
+  await setupNotificationChannel();
+
   const hasPermission = await requestPermissions();
   if (!hasPermission) {
     console.log("❌ Notification permission denied.");
@@ -60,7 +63,7 @@ async function scheduleNotification(time: Date, message: string) {
       title: "Habit Reminder",
       body: message || "Time to complete your habit!",
       sound: "default",
-      android: { channelId: 'habit-reminders' }, // ✅ Use the notification channel
+      android: { channelId: 'habit-reminders' }, // ✅ Ensure the notification uses the correct channel
     },
     trigger,
   });
@@ -72,6 +75,7 @@ async function scheduleNotification(time: Date, message: string) {
   Alert.alert("Reminder Set", `Your reminder is set for ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} every day.`);
   console.log("🎉 Scheduled Notification Successfully!");
 }
+
 
 // ✅ Test Immediate Notification
 async function testImmediateNotification() {
