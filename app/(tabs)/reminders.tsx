@@ -74,32 +74,15 @@ async function testImmediateNotification() {
 }
 
 // ✅ Test an scheduled notification
-async function testScheduledNotification() {
-  console.log("✅ Running minimal scheduling test...");
-
-  const hasPermission = await requestPermissions();
-  if (!hasPermission) return;
-
-  const now = new Date();
-  const triggerTime = new Date(now);
-  triggerTime.setMinutes(now.getMinutes() + 2); // 🔹 Schedule 2 minutes from now
-  triggerTime.setSeconds(0);
-  triggerTime.setMilliseconds(0);
-
-  console.log(`⏰ Test notification scheduled for ${triggerTime.toLocaleString()}`);
-
-  await Notifications.scheduleNotificationAsync({
+async function scheduleAndCancel() {
+  const identifier = await Notifications.scheduleNotificationAsync({
     content: {
-      title: "Test Notification",
-      body: "This should fire in exactly 2 minutes!",
-      sound: "default",
+      title: 'Hey!',
     },
-    trigger: { date: triggerTime }, // 🔹 Using absolute time
+    trigger: { seconds: 60, repeats: true },
   });
-
-  Alert.alert("Test Set", `Notification scheduled for ${triggerTime.toLocaleTimeString()}`);
+  await Notifications.cancelScheduledNotificationAsync(identifier);
 }
-
 
 // ✅ Main Component
 const RemindersScreen = () => {
@@ -187,7 +170,7 @@ const RemindersScreen = () => {
         <Text style={styles.buttonText}>Test Notification</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={testScheduledNotification}>
+      <TouchableOpacity style={styles.button} onPress={scheduleAndCancel}>
         <Text style={styles.buttonText}>Test Future Reminder</Text>
       </TouchableOpacity>
       
