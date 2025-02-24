@@ -5,91 +5,59 @@ import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+// ✅ Handle notifications properly
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: false,
+  }),
+});
+
 // ✅ Request notification permissions
 async function requestPermissions() {
-  if (Device.isDevice) {
-    const { status } = await Notifications.getPermissionsAsync();
-    if (status !== 'granted') {
-      const { status: newStatus } = await Notifications.requestPermissionsAsync();
-      if (newStatus !== 'granted') {
-        Alert.alert("Permission Required", "You need to enable notifications in settings.");
-        return false;
-      }
+  if (!Device.isDevice) return false;
+
+  const { status } = await Notifications.getPermissionsAsync();
+  if (status !== 'granted') {
+    const { status: newStatus } = await Notifications.requestPermissionsAsync();
+    if (newStatus !== 'granted') {
+      Alert.alert("Permission Required", "You need to enable notifications in settings.");
+      return false;
     }
-    return true;
   }
-  return false;
+  return true;
 }
 
-// ✅ Sets up a notification channel on Android
-async function setupNotificationChannel() {
-  if (Platform.OS === 'android') {
-    console.log("🔍 Fetching existing notification channels...");
-    const existingChannels = await Notifications.getNotificationChannelsAsync();
-    console.log("📢 Before Setup - Available Notification Channels:", existingChannels);
-
-    await Notifications.setNotificationChannelAsync('habit-reminders', {
-      name: 'Habit Reminders',
-      importance: Notifications.AndroidImportance.HIGH,
-      sound: 'default',
-      enableVibrate: true,
-    });
-
-    const updatedChannels = await Notifications.getNotificationChannelsAsync();
-    console.log("📢 After Setup - Available Notification Channels:", updatedChannels);
-  }
-}
-
-// ✅ Schedule Daily Reminder Notification
+// ✅ Schedule a one-time notification (no repeating issues)
 async function scheduleNotification(time: Date, message: string) {
   console.log("✅ Attempting to schedule notification...");
 
-  await setupNotificationChannel(); // ✅ Ensure channel exists
-
   const hasPermission = await requestPermissions();
-  if (!hasPermission) {
-    console.log("❌ Notification permission denied.");
-    return;
-  }
+  if (!hasPermission) return;
 
-  console.log("🔄 Canceling existing notifications...");
-  await Notifications.cancelAllScheduledNotificationsAsync();
+  const triggerTime = time.getTime();
+  const now = Date.now();
+  const secondsUntilTrigger = Math.max(1, Math.floor((triggerTime - now) / 1000));
 
-  const trigger = {
-    hour: time.getHours(),
-    minute: time.getMinutes(),
-    repeats: true, // ✅ Ensures daily repetition
-  };
-
-  console.log(`⏰ Scheduling for: ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
+  console.log(`⏰ Notification will trigger in ${secondsUntilTrigger} seconds.`);
 
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Habit Reminder",
       body: message || "Time to complete your habit!",
       sound: "default",
-      android: {
-        channelId: 'habit-reminders', // ✅ Force correct channel
-        priority: Notifications.AndroidNotificationPriority.HIGH, 
-        vibrate: [500, 500, 500], // ✅ Ensure vibration for visibility
-      },
     },
-    trigger,
+    trigger: { seconds: secondsUntilTrigger }, // ✅ Simple and effective timing
   });
 
-  const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
-  console.log("📋 Scheduled Notifications After Setting Reminder:", scheduledNotifications);
+  Alert.alert("Reminder Set", `Notification scheduled for ${time.toLocaleTimeString()}`);
 }
 
-
-// ✅ Test Immediate Notification
+// ✅ Test an immediate notification
 async function testImmediateNotification() {
-  await setupNotificationChannel(); // ✅ Ensure channel is created
-
   const hasPermission = await requestPermissions();
-  if (!hasPermission) {
-    return;
-  }
+  if (!hasPermission) return;
 
   console.log("✅ Sending immediate notification...");
 
@@ -98,22 +66,12 @@ async function testImmediateNotification() {
       title: "Immediate Notification",
       body: "This is an instant test!",
       sound: "default",
-      android: {
-        channelId: 'habit-reminders', // ✅ FORCE the correct channel
-        priority: Notifications.AndroidNotificationPriority.HIGH, 
-        vibrate: [500, 500, 500], // ✅ Ensure vibration for visibility
-      },
     },
-    trigger: { seconds: 1 }, // ✅ Fire in 1 second
+    trigger: { seconds: 1 }, // ✅ Fires in 1 second
   });
-
-  // ✅ Check if the notification is scheduled correctly
-  const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
-  console.log("📋 Scheduled Notifications After Test:", scheduledNotifications);
 
   console.log("🎉 Immediate Notification Sent!");
 }
-
 
 // ✅ Main Component
 const RemindersScreen = () => {
@@ -121,31 +79,14 @@ const RemindersScreen = () => {
   const [message, setMessage] = useState('');
   const [showPicker, setShowPicker] = useState(false);
 
-  // ✅ Load stored reminder when the screen loads
+  // ✅ Load stored reminder when screen loads
   useEffect(() => {
-    setupNotificationChannel(); // ✅ Ensure channel is set before scheduling notifications
-
     (async () => {
       const storedTime = await AsyncStorage.getItem('reminderTime');
       const storedMessage = await AsyncStorage.getItem('reminderMessage');
       if (storedTime) setTime(new Date(storedTime));
       if (storedMessage) setMessage(storedMessage);
     })();
-
-    // ✅ Set up notification listeners (runs once)
-    const notificationListener = Notifications.addNotificationReceivedListener(notification => {
-      console.log("📩 Notification received:", notification);
-    });
-
-    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log("🎯 Notification clicked:", response);
-    });
-
-    // ✅ Cleanup listeners when the component unmounts
-    return () => {
-      Notifications.removeNotificationSubscription(notificationListener);
-      Notifications.removeNotificationSubscription(responseListener);
-    };
   }, []);
 
   // ✅ Save and schedule reminder
@@ -192,12 +133,12 @@ const RemindersScreen = () => {
         placeholder="Enter reminder message"
       />
 
-      <TouchableOpacity style={styles.savereminderButton} onPress={handleSaveReminder}>
-        <Text style={styles.savereminderButtonText}>Set Reminder</Text>
+      <TouchableOpacity style={styles.button} onPress={handleSaveReminder}>
+        <Text style={styles.buttonText}>Set Reminder</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.savereminderButton} onPress={testImmediateNotification}>
-        <Text style={styles.savereminderButtonText}>Test Notification</Text>
+      <TouchableOpacity style={styles.button} onPress={testImmediateNotification}>
+        <Text style={styles.buttonText}>Test Notification</Text>
       </TouchableOpacity>
     </View>
   );
@@ -208,8 +149,8 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, paddingTop: 50, backgroundColor: '#f5f5f5' },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
   input: { borderWidth: 1, borderColor: "#BDBDBD", borderRadius: 10, padding: 10, fontSize: 16, marginBottom: 10, backgroundColor: "#FFFFFF", textAlign: 'center' },
-  savereminderButton: { backgroundColor: "#1B5E20", padding: 12, borderRadius: 10, alignItems: "center", marginBottom: 10 },
-  savereminderButtonText: { color: "white", fontSize: 16, fontWeight: "bold" },
+  button: { backgroundColor: "#1B5E20", padding: 12, borderRadius: 10, alignItems: "center", marginBottom: 10 },
+  buttonText: { color: "white", fontSize: 16, fontWeight: "bold" },
 });
 
 export default RemindersScreen;
