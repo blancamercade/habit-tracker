@@ -153,4 +153,13 @@ const RemindersScreen = () => {
   );
 };
 
+// ✅ Styles
+const styles = StyleSheet.create({
+  container: { flex: 1, padding: 20, paddingTop: 50, backgroundColor: '#f5f5f5' },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
+  input: { borderWidth: 1, borderColor: "#BDBDBD", borderRadius: 10, padding: 10, fontSize: 16, marginBottom: 10, backgroundColor: "#FFFFFF", textAlign: 'center' },
+  button: { backgroundColor: "#1B5E20", padding: 12, borderRadius: 10, alignItems: "center", marginBottom: 10 },
+  buttonText: { color: "white", fontSize: 16, fontWeight: "bold" },
+});
+
 export default RemindersScreen;
