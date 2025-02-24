@@ -14,10 +14,11 @@ Notifications.setNotificationHandler({
   }),
 });
 
+// ✅ Create a proper notification channel
 async function createNotificationChannel() {
     if (Platform.OS === 'android') {
-        await Notifications.setNotificationChannelAsync('default', {
-            name: 'Default Channel',
+        await Notifications.setNotificationChannelAsync('habit-reminders', {
+            name: 'Habit Reminders',
             importance: Notifications.AndroidImportance.MAX,
             vibrationPattern: [0, 250, 250, 250],
             lightColor: '#FF231F7C',
@@ -60,18 +61,20 @@ async function scheduleNotification(time: Date, message: string) {
       title: "Habit Reminder",
       body: message || "Time to complete your habit!",
       sound: "default",
+      android: { channelId: "habit-reminders" }, // ✅ Use custom channel
     },
     trigger: {
-      type: Notifications.SchedulableTriggerInputTypes.DATE, // ✅ Explicitly set trigger type
       date: triggerTime, 
+    },
   });
 
   Alert.alert("Reminder Set", `Notification scheduled for ${triggerTime.toLocaleString()}`);
 }
 
-
 // ✅ Test an immediate notification
 async function testImmediateNotification() {
+  await createNotificationChannel();
+  await Notifications.cancelAllScheduledNotificationsAsync();
   const hasPermission = await requestPermissions();
   if (!hasPermission) return;
 
@@ -82,55 +85,12 @@ async function testImmediateNotification() {
       title: "Immediate Notification",
       body: "This is an instant test!",
       sound: "default",
+      android: { channelId: "habit-reminders" },
     },
-    trigger: { seconds: 1 }, // ✅ Fires in 1 second
+    trigger: { seconds: 1 },
   });
 
   console.log("🎉 Immediate Notification Sent!");
-}
-
-// ✅ Test an scheduled notification
-async function scheduleAndCancel() {
-  const identifier = await Notifications.scheduleNotificationAsync({
-    content: {
-      title: 'Hey!',
-    },
-    trigger: { seconds: 60, repeats: true },
-  });
-  await Notifications.cancelScheduledNotificationAsync(identifier);
-}
-
-function getNextTriggerDate(hour, minute) {
-  const now = new Date();
-  const trigger = new Date();
-  trigger.setHours(hour, minute, 0, 0);
-  // If the trigger time has already passed today, schedule it for tomorrow
-  if (trigger <= now) {
-    trigger.setDate(trigger.getDate() + 1);
-  }
-  return trigger;
-}
-
-async function scheduleDailyNotification() {
-  await createNotificationChannel();
-  await Notifications.cancelAllScheduledNotificationsAsync(); // Clears old schedules
-
-  // Calculate the next trigger date for 00:16
-  const triggerDate = getNextTriggerDate(00, 18);
-
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "Daily Reminder",
-      body: "It is a scheduled notification!",
-      sound: "default",
-      priority: Notifications.AndroidNotificationPriority.MAX,
-    },
-    trigger: triggerDate,  // Ensures the first trigger is in the future
-  });
-
-  // For debugging: log all scheduled notifications
-  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
-  console.log("Scheduled Notifications:", scheduled);
 }
 
 // ✅ Main Component
@@ -144,7 +104,6 @@ const RemindersScreen = () => {
   const [message, setMessage] = useState('');
   const [showPicker, setShowPicker] = useState(false);
 
-  // ✅ Load stored reminder when screen loads
   useEffect(() => {
     (async () => {
       const storedTime = await AsyncStorage.getItem('reminderTime');
@@ -153,23 +112,6 @@ const RemindersScreen = () => {
       if (storedMessage) setMessage(storedMessage);
     })();
   }, []);
-
-  // ✅ Save and schedule reminder
-  const handleSaveReminder = async () => {
-    if (!message.trim()) {
-      Alert.alert("Error", "Please enter a reminder message.");
-      return;
-    }
-
-    try {
-      await AsyncStorage.setItem('reminderTime', time.toISOString());
-      await AsyncStorage.setItem('reminderMessage', message);
-
-      await scheduleNotification(time, message);
-    } catch (error) {
-      Alert.alert('Error', 'Failed to set reminder.');
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -187,53 +129,28 @@ const RemindersScreen = () => {
           onChange={(event, selectedTime) => {
             setShowPicker(false);
             if (selectedTime) {
-              // ✅ Preserve today's date, only update the hours and minutes
-              const now = new Date(); // ✅ Get current time inside the function
-              const newTime = new Date();
+              const now = new Date();
+              let newTime = new Date(now);
               newTime.setHours(selectedTime.getHours());
               newTime.setMinutes(selectedTime.getMinutes());
               newTime.setSeconds(0);
               newTime.setMilliseconds(0);
-              // ✅ If the selected time is in the past today, move it to tomorrow
-              if (newTime <= now) {
-                newTime.setDate(newTime.getDate() + 1);
-              }
-              setTime(newTime); // ✅ Now `time` contains the correct full date and is in the future
+              if (newTime <= now) newTime.setDate(newTime.getDate() + 1);
+              setTime(newTime);
             }
           }}
         />
       )}
 
-      <TextInput
-        style={styles.input}
-        value={message}
-        onChangeText={setMessage}
-        placeholder="Enter reminder message"
-      />
-
-      <TouchableOpacity style={styles.button} onPress={handleSaveReminder}>
+      <TouchableOpacity style={styles.button} onPress={() => scheduleNotification(time, message)}>
         <Text style={styles.buttonText}>Set Reminder</Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.button} onPress={testImmediateNotification}>
         <Text style={styles.buttonText}>Test Notification</Text>
       </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={scheduleDailyNotification}>
-        <Text style={styles.buttonText}>Test Future Reminder</Text>
-      </TouchableOpacity>
-      
     </View>
   );
 };
-
-// ✅ Styles
-const styles = StyleSheet.create({
-  container: { flex: 1, padding: 20, paddingTop: 50, backgroundColor: '#f5f5f5' },
-  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
-  input: { borderWidth: 1, borderColor: "#BDBDBD", borderRadius: 10, padding: 10, fontSize: 16, marginBottom: 10, backgroundColor: "#FFFFFF", textAlign: 'center' },
-  button: { backgroundColor: "#1B5E20", padding: 12, borderRadius: 10, alignItems: "center", marginBottom: 10 },
-  buttonText: { color: "white", fontSize: 16, fontWeight: "bold" },
-});
 
 export default RemindersScreen;
