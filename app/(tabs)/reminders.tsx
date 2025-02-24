@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Alert, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Alert, TouchableOpacity, StyleSheet, Platform } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import * as Notifications from 'expo-notifications';
 import * as Device from 'expo-device';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Platform } from 'react-native';
 
-// Request notification permissions
+// ✅ Request notification permissions
 async function requestPermissions() {
   if (Device.isDevice) {
     const { status } = await Notifications.getPermissionsAsync();
@@ -22,7 +21,7 @@ async function requestPermissions() {
   return false;
 }
 
-// Sets up a notification channel
+// ✅ Sets up a notification channel on Android
 async function setupNotificationChannel() {
   if (Platform.OS === 'android') {
     await Notifications.setNotificationChannelAsync('habit-reminders', {
@@ -35,8 +34,7 @@ async function setupNotificationChannel() {
   }
 }
 
-// Schedule Daily Reminder Notification
-
+// ✅ Schedule Daily Reminder Notification
 async function scheduleNotification(time: Date, message: string) {
   console.log("✅ Attempting to schedule notification...");
 
@@ -52,7 +50,7 @@ async function scheduleNotification(time: Date, message: string) {
   const trigger = {
     hour: time.getHours(),
     minute: time.getMinutes(),
-    repeats: true,
+    repeats: true, // ✅ Makes sure it repeats daily
   };
 
   console.log(`⏰ Scheduling for: ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
@@ -67,21 +65,15 @@ async function scheduleNotification(time: Date, message: string) {
     trigger,
   });
 
+  // ✅ Debugging: Log scheduled notifications
   const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
-  console.log("📋 Scheduled Notifications:", scheduledNotifications);
-}
-
-// Debugging: Log all scheduled notifications
-const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
   console.log("📋 Scheduled Notifications:", scheduledNotifications);
 
   Alert.alert("Reminder Set", `Your reminder is set for ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} every day.`);
   console.log("🎉 Scheduled Notification Successfully!");
 }
 
-// Test Immediate Notification
-
-
+// ✅ Test Immediate Notification
 async function testImmediateNotification() {
   const hasPermission = await requestPermissions();
   if (!hasPermission) {
@@ -90,46 +82,52 @@ async function testImmediateNotification() {
 
   console.log("✅ Sending immediate notification...");
 
-  // Set up a listener to see if the notification is actually received
-  Notifications.addNotificationReceivedListener(notification => {
-    console.log("📩 Notification received:", notification);
-  });
-
-  // Set up a listener to check if the user interacts with the notification
-  Notifications.addNotificationResponseReceivedListener(response => {
-    console.log("🎯 Notification clicked:", response);
-  });
-
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Immediate Notification",
       body: "This is an instant test!",
       sound: "default",
+      android: { channelId: 'habit-reminders' }, // ✅ Now it uses the notification channel
     },
-    trigger: { seconds: 1 }, // Fire in 1 second
+    trigger: { seconds: 1 }, // ✅ Fire in 1 second
   });
 
   console.log("🎉 Immediate Notification Sent!");
 }
-
-
 
 const RemindersScreen = () => {
   const [time, setTime] = useState(new Date());
   const [message, setMessage] = useState('');
   const [showPicker, setShowPicker] = useState(false);
 
-  // Load stored reminder
+  // ✅ Load stored reminder when the screen loads
   useEffect(() => {
-    setupNotificationChannel();
+    setupNotificationChannel(); // ✅ Ensure channel is set before scheduling notifications
+
     (async () => {
       const storedTime = await AsyncStorage.getItem('reminderTime');
       const storedMessage = await AsyncStorage.getItem('reminderMessage');
       if (storedTime) setTime(new Date(storedTime));
       if (storedMessage) setMessage(storedMessage);
     })();
+
+    // ✅ Set up notification listeners (runs once)
+    const notificationListener = Notifications.addNotificationReceivedListener(notification => {
+      console.log("📩 Notification received:", notification);
+    });
+
+    const responseListener = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log("🎯 Notification clicked:", response);
+    });
+
+    // ✅ Cleanup listeners when the component unmounts
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener);
+      Notifications.removeNotificationSubscription(responseListener);
+    };
   }, []);
 
+  // ✅ Save and schedule reminder
   const handleSaveReminder = async () => {
     if (!message.trim()) {
       Alert.alert("Error", "Please enter a reminder message.");
@@ -180,46 +178,16 @@ const RemindersScreen = () => {
       <TouchableOpacity style={styles.savereminderButton} onPress={testImmediateNotification}>
         <Text style={styles.savereminderButtonText}>Test Notification</Text>
       </TouchableOpacity>
-
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    paddingTop: 50,
-    backgroundColor: '#f5f5f5',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#BDBDBD",
-    borderRadius: 10,
-    padding: 10,
-    fontSize: 16,
-    marginBottom: 10,
-    backgroundColor: "#FFFFFF",
-    textAlign: 'center',
-  },
-  savereminderButton: {
-    backgroundColor: "#1B5E20",
-    padding: 12,
-    borderRadius: 10,
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  savereminderButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
+  container: { flex: 1, padding: 20, paddingTop: 50, backgroundColor: '#f5f5f5' },
+  title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
+  input: { borderWidth: 1, borderColor: "#BDBDBD", borderRadius: 10, padding: 10, fontSize: 16, marginBottom: 10, backgroundColor: "#FFFFFF", textAlign: 'center' },
+  savereminderButton: { backgroundColor: "#1B5E20", padding: 12, borderRadius: 10, alignItems: "center", marginBottom: 10 },
+  savereminderButtonText: { color: "white", fontSize: 16, fontWeight: "bold" },
 });
 
 export default RemindersScreen;
