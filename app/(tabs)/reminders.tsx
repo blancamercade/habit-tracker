@@ -73,6 +73,34 @@ async function testImmediateNotification() {
   console.log("🎉 Immediate Notification Sent!");
 }
 
+// ✅ Test an scheduled notification
+async function testScheduledNotification() {
+  console.log("✅ Running minimal scheduling test...");
+
+  const hasPermission = await requestPermissions();
+  if (!hasPermission) return;
+
+  const now = new Date();
+  const triggerTime = new Date(now);
+  triggerTime.setMinutes(now.getMinutes() + 2); // 🔹 Schedule 2 minutes from now
+  triggerTime.setSeconds(0);
+  triggerTime.setMilliseconds(0);
+
+  console.log(`⏰ Test notification scheduled for ${triggerTime.toLocaleString()}`);
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Test Notification",
+      body: "This should fire in exactly 2 minutes!",
+      sound: "default",
+    },
+    trigger: { date: triggerTime }, // 🔹 Using absolute time
+  });
+
+  Alert.alert("Test Set", `Notification scheduled for ${triggerTime.toLocaleTimeString()}`);
+}
+
+
 // ✅ Main Component
 const RemindersScreen = () => {
   const [time, setTime] = useState(() => {
@@ -158,6 +186,11 @@ const RemindersScreen = () => {
       <TouchableOpacity style={styles.button} onPress={testImmediateNotification}>
         <Text style={styles.buttonText}>Test Notification</Text>
       </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={testScheduledNotification}>
+        <Text style={styles.buttonText}>Test Future Reminder</Text>
+      </TouchableOpacity>
+      
     </View>
   );
 };
