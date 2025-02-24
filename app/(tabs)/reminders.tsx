@@ -34,10 +34,11 @@ async function scheduleNotification(time: Date, message: string) {
   console.log("🔄 Canceling existing notifications...");
   await Notifications.cancelAllScheduledNotificationsAsync();
 
+  // Set trigger for the exact time every day
   const trigger = {
     hour: time.getHours(),
     minute: time.getMinutes(),
-    repeats: true, // Ensures daily repetition
+    repeats: true, // Repeat every day at the set time
   };
 
   console.log(`⏰ Scheduling for: ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
@@ -45,11 +46,15 @@ async function scheduleNotification(time: Date, message: string) {
   await Notifications.scheduleNotificationAsync({
     content: {
       title: "Habit Reminder",
-      body: message,
+      body: message || "Time to complete your habit!",
       sound: "default",
     },
     trigger,
   });
+
+  // Debugging: Log all scheduled notifications
+  const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
+  console.log("📋 Scheduled Notifications:", scheduledNotifications);
 
   Alert.alert("Reminder Set", `Your reminder is set for ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} every day.`);
   console.log("🎉 Scheduled Notification Successfully!");
@@ -72,7 +77,6 @@ async function testImmediateNotification() {
     },
     trigger: null, // No trigger needed for instant notifications
   });
-
   console.log("🎉 Immediate Notification Sent!");
 }
 
