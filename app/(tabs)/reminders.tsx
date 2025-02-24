@@ -39,9 +39,7 @@ async function scheduleNotification(time: Date, message: string) {
   const now = new Date();
   let triggerTime = new Date(time);
 
-  const secondsUntilTrigger = Math.floor((triggerTime.getTime() - now.getTime()) / 1000);
-
-  console.log(`⏰ Notification scheduled for ${triggerTime.toLocaleTimeString()} (${secondsUntilTrigger} seconds from now)`);
+  console.log(`⏰ Notification scheduled for ${triggerTime.toLocaleString()} (${(triggerTime.getTime() - now.getTime()) / 1000} seconds from now)`);
 
   await Notifications.scheduleNotificationAsync({
     content: {
@@ -49,10 +47,10 @@ async function scheduleNotification(time: Date, message: string) {
       body: message || "Time to complete your habit!",
       sound: "default",
     },
-    trigger: { seconds: secondsUntilTrigger },
+    trigger: { date: triggerTime }, // ✅ Use absolute date instead of seconds
   });
 
-  Alert.alert("Reminder Set", `Notification scheduled for ${triggerTime.toLocaleTimeString()}`);
+  Alert.alert("Reminder Set", `Notification scheduled for ${triggerTime.toLocaleString()}`);
 }
 
 
