@@ -34,17 +34,14 @@ async function setupNotificationChannel() {
     // ✅ Debugging: Log all channels
     const channels = await Notifications.getNotificationChannelsAsync();
     console.log("📢 Available Notification Channels:", channels);
-
-    console.log("✅ Notification channel set up.");
   }
 }
-
 
 // ✅ Schedule Daily Reminder Notification
 async function scheduleNotification(time: Date, message: string) {
   console.log("✅ Attempting to schedule notification...");
 
-  // ✅ Ensure the notification channel is set up and logged
+  // ✅ Ensure the notification channel is set up
   await setupNotificationChannel();
 
   const hasPermission = await requestPermissions();
@@ -59,7 +56,7 @@ async function scheduleNotification(time: Date, message: string) {
   const trigger = {
     hour: time.getHours(),
     minute: time.getMinutes(),
-    repeats: true,
+    repeats: true, // ✅ Ensures daily repetition
   };
 
   console.log(`⏰ Scheduling for: ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`);
@@ -70,16 +67,44 @@ async function scheduleNotification(time: Date, message: string) {
       body: message || "Time to complete your habit!",
       sound: "default",
       android: {
-        channelId: 'habit-reminders', // ✅ Force Expo to use this channel
+        channelId: 'habit-reminders', // ✅ Ensures notification uses the correct channel
       },
     },
     trigger,
   });
 
+  // ✅ Debugging: Log scheduled notifications
   const scheduledNotifications = await Notifications.getAllScheduledNotificationsAsync();
   console.log("📋 Scheduled Notifications:", scheduledNotifications);
+
+  Alert.alert("Reminder Set", `Your reminder is set for ${time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} every day.`);
 }
 
+// ✅ Test Immediate Notification
+async function testImmediateNotification() {
+  const hasPermission = await requestPermissions();
+  if (!hasPermission) {
+    return;
+  }
+
+  console.log("✅ Sending immediate notification...");
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Immediate Notification",
+      body: "This is an instant test!",
+      sound: "default",
+      android: {
+        channelId: 'habit-reminders', // ✅ Ensures notification appears
+      },
+    },
+    trigger: { seconds: 1 }, // ✅ Fire in 1 second
+  });
+
+  console.log("🎉 Immediate Notification Sent!");
+}
+
+// ✅ Main Component
 const RemindersScreen = () => {
   const [time, setTime] = useState(new Date());
   const [message, setMessage] = useState('');
@@ -167,6 +192,7 @@ const RemindersScreen = () => {
   );
 };
 
+// ✅ Styles
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 20, paddingTop: 50, backgroundColor: '#f5f5f5' },
   title: { fontSize: 24, fontWeight: "bold", marginBottom: 20, textAlign: "center" },
