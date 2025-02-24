@@ -29,30 +29,37 @@ async function requestPermissions() {
   return true;
 }
 
-// ✅ Schedule a one-time notification (no repeating issues)
+// ✅ Schedule a one-time notification 
 async function scheduleNotification(time: Date, message: string) {
   console.log("✅ Attempting to schedule notification...");
 
   const hasPermission = await requestPermissions();
   if (!hasPermission) return;
+  
+  const now = new Date();
+    let triggerTime = new Date(time);
+  
+    // ✅ Ensure the notification is set for the future
+    if (triggerTime <= now) {
+      triggerTime.setDate(triggerTime.getDate() + 1); // Move to the next day if time has passed
+    }
+  
+    const secondsUntilTrigger = Math.floor((triggerTime.getTime() - now.getTime()) / 1000);
+  
+    console.log(`⏰ Notification scheduled for ${triggerTime.toLocaleTimeString()} (${secondsUntilTrigger} seconds from now)`);
+  
+    await Notifications.scheduleNotificationAsync({
+      content: {
+        title: "Habit Reminder",
+        body: message || "Time to complete your habit!",
+        sound: "default",
+      },
+      trigger: { seconds: secondsUntilTrigger },
+    });
+  
+    Alert.alert("Reminder Set", `Notification scheduled for ${triggerTime.toLocaleTimeString()}`);
+  }
 
-  const triggerTime = time.getTime();
-  const now = Date.now();
-  const secondsUntilTrigger = Math.max(1, Math.floor((triggerTime - now) / 1000));
-
-  console.log(`⏰ Notification will trigger in ${secondsUntilTrigger} seconds.`);
-
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "Habit Reminder",
-      body: message || "Time to complete your habit!",
-      sound: "default",
-    },
-    trigger: { seconds: secondsUntilTrigger }, // ✅ Simple and effective timing
-  });
-
-  Alert.alert("Reminder Set", `Notification scheduled for ${time.toLocaleTimeString()}`);
-}
 
 // ✅ Test an immediate notification
 async function testImmediateNotification() {
