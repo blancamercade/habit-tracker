@@ -14,6 +14,17 @@ Notifications.setNotificationHandler({
   }),
 });
 
+async function createNotificationChannel() {
+    if (Platform.OS === 'android') {
+        await Notifications.setNotificationChannelAsync('default', {
+            name: 'Default Channel',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+        });
+    }
+}
+
 // ✅ Request notification permissions
 async function requestPermissions() {
   if (!Device.isDevice) return false;
@@ -31,6 +42,9 @@ async function requestPermissions() {
 
 // ✅ Schedule a one-time notification 
 async function scheduleNotification(time: Date, message: string) {
+  await createNotificationChannel();
+  await Notifications.cancelAllScheduledNotificationsAsync();
+  
   console.log("✅ Attempting to schedule notification...");
 
   const hasPermission = await requestPermissions();
@@ -82,6 +96,39 @@ async function scheduleAndCancel() {
     trigger: { seconds: 60, repeats: true },
   });
   await Notifications.cancelScheduledNotificationAsync(identifier);
+}
+
+function getNextTriggerDate(hour, minute) {
+  const now = new Date();
+  const trigger = new Date();
+  trigger.setHours(hour, minute, 0, 0);
+  // If the trigger time has already passed today, schedule it for tomorrow
+  if (trigger <= now) {
+    trigger.setDate(trigger.getDate() + 1);
+  }
+  return trigger;
+}
+
+async function scheduleDailyNotification() {
+  await createNotificationChannel();
+  await Notifications.cancelAllScheduledNotificationsAsync(); // Clears old schedules
+
+  // Calculate the next trigger date for 20:10
+  const triggerDate = getNextTriggerDate(20, 10);
+
+  await Notifications.scheduleNotificationAsync({
+    content: {
+      title: "Daily Reminder",
+      body: "It is a scheduled notification!",
+      sound: "default",
+      priority: Notifications.AndroidNotificationPriority.MAX,
+    },
+    trigger: triggerDate,  // Ensures the first trigger is in the future
+  });
+
+  // For debugging: log all scheduled notifications
+  const scheduled = await Notifications.getAllScheduledNotificationsAsync();
+  console.log("Scheduled Notifications:", scheduled);
 }
 
 // ✅ Main Component
@@ -170,7 +217,7 @@ const RemindersScreen = () => {
         <Text style={styles.buttonText}>Test Notification</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={scheduleAndCancel}>
+      <TouchableOpacity style={styles.button} onPress={scheduleDailyNotification}>
         <Text style={styles.buttonText}>Test Future Reminder</Text>
       </TouchableOpacity>
       
