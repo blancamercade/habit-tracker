@@ -69,8 +69,8 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   progressBar: {
-    height: 10,
-    marginVertical: 5,
+    height: 15,
+    marginVertical: 15,
     borderRadius: 5,
   },
   noHistory: {
@@ -83,6 +83,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 15,
     marginVertical: 5,
+    borderRadius: 10,
+  },
+  goalItem: {
+    backgroundColor: 'white',
+    padding: 15,
     borderRadius: 10,
   },
   date: {
