@@ -109,6 +109,7 @@ export default function GoalsScreen() {
                 updateProgress(item.id, value);
               }}
             />
+            <Text style={styles.goalTitleText}> Complete by {item.deadline} </Text>
           </View>
         )}
       />
@@ -231,6 +232,7 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 5,
     marginVertical: 5,
+    padding: 10,
   },
   goalTitleItem: {
     backgroundColor: 'white',
