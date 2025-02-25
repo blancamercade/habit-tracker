@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 10,
     alignItems: "center",
+    marginVertical: 5,
   },
   GreenButtonText: {
     color: "white",
