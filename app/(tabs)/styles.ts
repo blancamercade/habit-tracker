@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   progressBar: {
     height: 10,
     marginVertical: 5,
+    borderRadius: 5,
   },
   noHistory: {
     textAlign: 'center',
