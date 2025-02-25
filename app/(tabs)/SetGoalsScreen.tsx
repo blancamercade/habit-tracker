@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, FlatList, StyleSheet, Pressable } from "react-native";
 import { Goal, loadGoals, saveGoals, addGoal, deleteGoal } from "./GoalsManager";
+import styles from "./styles";  // ✅ Import shared styles
+
 
 export default function SetGoalsScreen() {
   const [goals, setGoals] = useState<Goal[]>([]);
