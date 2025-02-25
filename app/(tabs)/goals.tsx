@@ -125,20 +125,19 @@ export default function GoalsScreen() {
         data={goals}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.goalItem}>
-            <Text style={styles.goalText}>
-              {item.name}: {item.completed}/{item.target}
-            </Text>
-            <Text style={styles.deadlineText}>Deadline: {item.deadline}</Text>
-
-            {/* Progress Bar */}
-            <ProgressBar
-              progress={item.completed / item.target}
-              color="#1B5E20"
-              style={styles.progressBar}
-            />
-
-            {/* Input for Progress Update */}
+          <View style={styles.goalItem}> // Goal item
+            
+            //Goal title
+            <View style={styles.goalTitleItem}> // Goal item
+              <Text style={styles.goalTitleText}> {item.name}: {item.completed}/{item.target} </Text> //Goal title
+              {/* Delete Goal Button */}
+              <TouchableOpacity onPress={() => deleteGoal(item.id)}>
+                <Text style={styles.deleteText}>❌</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <Text style={styles.deadlineText}>Deadline: {item.deadline}</Text> //Goal deadline
+            <ProgressBar progress={item.completed / item.target} color="#1B5E20" style={styles.progressBar} /> //Progress bar
             <TextInput
               style={styles.inputSmall}
               placeholder="Enter progress"
@@ -148,11 +147,6 @@ export default function GoalsScreen() {
                 updateProgress(item.id, value);
               }}
             />
-
-            {/* Delete Goal Button */}
-            <Pressable style={styles.deleteButton} onPress={() => deleteGoal(item.id)}>
-              <Text style={styles.deleteText}>Delete</Text>
-            </Pressable>
           </View>
         )}
       />
@@ -217,16 +211,17 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     marginVertical: 5,
   },
-  deleteButton: {
-    backgroundColor: 'red',
-    padding: 12,
+  goalTitleItem: {
+    backgroundColor: 'white',
+    padding: 15,
+    marginVertical: 5,
     borderRadius: 10,
-    alignItems: "center",
+    flexDirection: "row",  // Align items horizontally
+    justifyContent: "space-between", // Push items to the edges
+    alignItems: "center", // Align vertically in the center
   },
-  deleteText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
+  goalTitleText: {
+    fontSize: 18,
   },
 });
 
