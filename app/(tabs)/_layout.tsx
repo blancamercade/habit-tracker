@@ -42,7 +42,7 @@ export default function Layout() {
       <Tab.Screen name="Habits" component={HomeScreen} />
       <Tab.Screen name="Goals" component={UpdateGoalsScreen} />
       <Tab.Screen name="Look Back" component={HistoryScreen} />
-      <Tab.Screen name="Set objectives" component={SetObjectivesScreen} />
+      <Tab.Screen name="Set Objectives" component={SetObjectivesScreen} />
       <Tab.Screen name="Set Habits" component={SetHabitsScreen} />
       <Tab.Screen name="Set Goals" component={SetGoalsScreen} />
     </Tab.Navigator>
