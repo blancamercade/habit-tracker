@@ -2,18 +2,22 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Button, FlatList, StyleSheet, Pressable } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProgressBar } from "react-native-paper";
+import DateTimePicker from "@react-native-community/datetimepicker"; // Import date picker
 
 interface Goal {
   id: string;
   name: string;
   target: number;
   completed: number;
+  deadline: string; // Add deadline field
 }
 
 export default function GoalsScreen() {
   const [goals, setGoals] = useState<Goal[]>([]);
   const [newGoalName, setNewGoalName] = useState("");
   const [newGoalTarget, setNewGoalTarget] = useState("");
+  const [newGoalDeadline, setNewGoalDeadline] = useState<Date | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     loadGoals();
@@ -44,18 +48,20 @@ export default function GoalsScreen() {
 
   // Add a new goal
   const addGoal = () => {
-    if (!newGoalName || !newGoalTarget) return;
+    if (!newGoalName || !newGoalTarget || !newGoalDeadline) return;
 
     const newGoal: Goal = {
       id: Math.random().toString(),
       name: newGoalName,
       target: parseInt(newGoalTarget),
       completed: 0,
+      deadline: newGoalDeadline.toISOString().split("T")[0], // Store as YYYY-MM-DD
     };
 
     setGoals((prevGoals) => [...prevGoals, newGoal]);
     setNewGoalName("");
     setNewGoalTarget("");
+    setNewGoalDeadline(null);
   };
 
   // Update goal progress
@@ -92,6 +98,26 @@ export default function GoalsScreen() {
         onChangeText={setNewGoalTarget}
         keyboardType="numeric"
       />
+
+      {/* Date Picker for Deadline */}
+      <Pressable style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
+        <Text style={styles.dateButtonText}>
+          {newGoalDeadline ? `Deadline: ${newGoalDeadline.toDateString()}` : "Select Deadline"}
+        </Text>
+      </Pressable>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={newGoalDeadline || new Date()}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            setShowDatePicker(false);
+            if (selectedDate) setNewGoalDeadline(selectedDate);
+          }}
+        />
+      )}
+
       <Button title="Add Goal" onPress={addGoal} />
 
       {/* List of Goals */}
@@ -103,6 +129,7 @@ export default function GoalsScreen() {
             <Text style={styles.goalText}>
               {item.name}: {item.completed}/{item.target}
             </Text>
+            <Text style={styles.deadlineText}>Deadline: {item.deadline}</Text>
 
             {/* Progress Bar */}
             <ProgressBar
@@ -160,15 +187,30 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 5,
   },
+  dateButton: {
+    backgroundColor: "#1976D2",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    marginBottom: 10,
+  },
+  dateButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
   goalItem: {
     marginVertical: 10,
     padding: 10,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: "#fff",
     borderRadius: 5,
   },
   goalText: {
     fontSize: 16,
     marginBottom: 5,
+  },
+  deadlineText: {
+    fontSize: 14,
+    color: "#D32F2F",
   },
   progressBar: {
     height: 10,
