@@ -29,13 +29,13 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     color: 'gray',
   },
-  logButton: {
+  GreenButton: {
     backgroundColor: "#1B5E20",
     padding: 12,
     borderRadius: 10,
     alignItems: "center",
   },
-  logButtonText: {
+  GreenButtonText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
