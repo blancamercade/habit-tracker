@@ -27,7 +27,7 @@ export default function Layout() {
             iconName = "trophy-outline"; // ✅ Track Goals
           } else if (route.name === "Look Back") {
             iconName = "time-outline"; // ✅ History screen
-          }  else if (route.name === "Set objectives") {
+          }  else if (route.name === "Set Objectives") {
             iconName = "settings-outline";} // ✅ Set goals and habits
 
           return <Ionicons name={iconName} size={size} color={color} />;
@@ -38,8 +38,6 @@ export default function Layout() {
       <Tab.Screen name="Goals" component={UpdateGoalsScreen} />
       <Tab.Screen name="Look Back" component={HistoryScreen} />
       <Tab.Screen name="Set Objectives" component={SetObjectivesScreen} />
-      <Tab.Screen name="Set Habits" component={SetHabitsScreen} />
-      <Tab.Screen name="Set Goals" component={SetGoalsScreen} />
     </Tab.Navigator>
   );
 }
