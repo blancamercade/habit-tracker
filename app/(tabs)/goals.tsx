@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, FlatList, StyleSheet, Pressable, TouchableOpacity, } from "react-native";
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProgressBar } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker"; // Import date picker
@@ -89,18 +89,25 @@ export default function GoalsScreen() {
         data={goals}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.goalItem}> 
-            
-            //Goal title
-            <View style={styles.goalTitleItem}> // Goal item
-              <Text style={styles.goalTitleText}> {item.name}: {item.completed}/{item.target} </Text> 
+          <View style={styles.goalItem}>
+            {/* Goal title row */}
+            <View style={styles.goalTitleItem}>
+              <Text style={styles.goalTitleText}>
+                {item.name}: {item.completed}/{item.target}
+              </Text>
               {/* Delete Goal Button */}
               <TouchableOpacity onPress={() => deleteGoal(item.id)}>
                 <Text style={styles.deleteText}>❌</Text>
               </TouchableOpacity>
             </View>
-            <ProgressBar progress={item.completed / item.target} color="#1B5E20" style={styles.progressBar} /> 
-            <Text style={styles.goalTitleText}> by {item.deadline} </Text>
+
+            {/* Progress Bar */}
+            <ProgressBar progress={item.completed / item.target} color="#1B5E20" style={styles.progressBar} />
+            
+            {/* Deadline */}
+            <Text style={styles.goalTitleText}>By {item.deadline}</Text>
+
+            {/* Enter Progress */}
             <TextInput
               style={styles.input}
               placeholder="Enter progress"
@@ -110,7 +117,6 @@ export default function GoalsScreen() {
                 updateProgress(item.id, value);
               }}
             />
-            
           </View>
         )}
       />
@@ -131,30 +137,28 @@ export default function GoalsScreen() {
       />
 
       {/* Date Picker for Deadline */}
-        <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
-          <Text style={styles.inputText}>
-            {newGoalDeadline ? newGoalDeadline.toDateString() : "Select Deadline"}
-          </Text>
-        </TouchableOpacity>
-        
-        {showDatePicker && (
-          <DateTimePicker
-            value={newGoalDeadline || new Date()}
-            mode="date"
-            display="default"
-            onChange={(event, selectedDate) => {
-              setShowDatePicker(false);
-              if (selectedDate) setNewGoalDeadline(selectedDate);
-            }}
-          />
-        )}
+      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
+        <Text style={styles.inputText}>
+          {newGoalDeadline ? newGoalDeadline.toDateString() : "Select Deadline"}
+        </Text>
+      </TouchableOpacity>
 
-      // Add goal   
+      {showDatePicker && (
+        <DateTimePicker
+          value={newGoalDeadline || new Date()}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            setShowDatePicker(false);
+            if (selectedDate) setNewGoalDeadline(selectedDate);
+          }}
+        />
+      )}
+
+      {/* Add Goal Button */}
       <TouchableOpacity style={styles.addGoal} onPress={addGoal}>
         <Text style={styles.addGoalText}>+ Add Goal</Text>
       </TouchableOpacity>
-
-      
     </View>
   );
 }
@@ -184,25 +188,28 @@ const styles = StyleSheet.create({
   },
   inputText: {
     fontSize: 16,
-    color: "#000000", // Ensure text is visible
+    color: "#000000",
   },
-  inputSmall: {
-    borderBottomWidth: 1,
-    width: 80,
-    padding: 5,
-    fontSize: 16,
-    marginTop: 5,
-  },
-  dateButton: {
-    backgroundColor: "#1976D2",
-    padding: 10,
+  progressBar: {
+    height: 10,
     borderRadius: 5,
-    alignItems: "center",
-    marginBottom: 10,
+    marginVertical: 10,
   },
-  dateButtonText: {
-    fontSize: 16,
-    color: "#000000", // Ensure text is visible
+  goalItem: {
+    padding: 15,
+    marginVertical: 5,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+  },
+  goalTitleItem: {
+    backgroundColor: 'white',
+    borderRadius: 10,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  goalTitleText: {
+    fontSize: 18,
   },
   addGoal: {
     backgroundColor: "#1B5E20",
@@ -215,35 +222,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  goalItem: {
-    padding: 15,
-    marginVertical: 5,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-  },
-  goalText: {
+  deleteText: {
     fontSize: 16,
-    marginBottom: 5,
-  },
-  deadlineText: {
-    fontSize: 14,
-    color: "#D32F2F",
-  },
-  progressBar: {
-    height: 10,
-    borderRadius: 5,
-    marginVertical: 10,
-    padding: 5,
-  },
-  goalTitleItem: {
-    backgroundColor: 'white',
-    borderRadius: 10,
-    flexDirection: "row",  // Align items horizontally
-    justifyContent: "space-between", // Push items to the edges
-    alignItems: "center", // Align vertically in the center
-  },
-  goalTitleText: {
-    fontSize: 18,
+    color: "red",
   },
 });
 
