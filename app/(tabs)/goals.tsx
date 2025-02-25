@@ -89,17 +89,18 @@ export default function GoalsScreen() {
         data={goals}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.goalItem}> // Goal item
+          <View style={styles.goalItem}> 
             
             //Goal title
             <View style={styles.goalTitleItem}> // Goal item
-              <Text style={styles.goalTitleText}> {item.name}: {item.completed}/{item.target} </Text> //Goal title
+              <Text style={styles.goalTitleText}> {item.name}: {item.completed}/{item.target} </Text> 
               {/* Delete Goal Button */}
               <TouchableOpacity onPress={() => deleteGoal(item.id)}>
                 <Text style={styles.deleteText}>❌</Text>
               </TouchableOpacity>
             </View>
-            <ProgressBar progress={item.completed / item.target} color="#1B5E20" style={styles.progressBar} /> //Progress bar
+            <ProgressBar progress={item.completed / item.target} color="#1B5E20" style={styles.progressBar} /> 
+            <Text style={styles.goalTitleText}> by {item.deadline} </Text>
             <TextInput
               style={styles.input}
               placeholder="Enter progress"
@@ -109,7 +110,7 @@ export default function GoalsScreen() {
                 updateProgress(item.id, value);
               }}
             />
-            <Text style={styles.goalTitleText}> Complete by {item.deadline} </Text>
+            
           </View>
         )}
       />
