@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, ScrollView, Button, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect } from '@react-navigation/native';
+import styles from "./styles";  // ✅ Import shared styles
 
 export default function HistoryScreen() {
   const [history, setHistory] = useState([]); // Ensures history is always an array
