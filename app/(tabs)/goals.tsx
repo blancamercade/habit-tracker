@@ -84,7 +84,38 @@ export default function GoalsScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Goals</Text>
 
-      {/* Input Fields to Add a Goal */}
+      {/* List of Goals */}
+      <FlatList
+        data={goals}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.goalItem}> // Goal item
+            
+            //Goal title
+            <View style={styles.goalTitleItem}> // Goal item
+              <Text style={styles.goalTitleText}> {item.name}: {item.completed}/{item.target} </Text> //Goal title
+              {/* Delete Goal Button */}
+              <TouchableOpacity onPress={() => deleteGoal(item.id)}>
+                <Text style={styles.deleteText}>❌</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <Text style={styles.deadlineText}>Deadline: {item.deadline}</Text> //Goal deadline
+            <ProgressBar progress={item.completed / item.target} color="#1B5E20" style={styles.progressBar} /> //Progress bar
+            <TextInput
+              style={styles.inputSmall}
+              placeholder="Enter progress"
+              keyboardType="numeric"
+              onSubmitEditing={(event) => {
+                const value = parseInt(event.nativeEvent.text) || 0;
+                updateProgress(item.id, value);
+              }}
+            />
+          </View>
+        )}
+      />
+
+{/* Input Fields to Add a Goal */}
       <TextInput
         style={styles.input}
         placeholder="Goal name (e.g., Push-ups)"
@@ -123,36 +154,7 @@ export default function GoalsScreen() {
         <Text style={styles.addGoalText}>+ Add Goal</Text>
       </TouchableOpacity>
 
-      {/* List of Goals */}
-      <FlatList
-        data={goals}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.goalItem}> // Goal item
-            
-            //Goal title
-            <View style={styles.goalTitleItem}> // Goal item
-              <Text style={styles.goalTitleText}> {item.name}: {item.completed}/{item.target} </Text> //Goal title
-              {/* Delete Goal Button */}
-              <TouchableOpacity onPress={() => deleteGoal(item.id)}>
-                <Text style={styles.deleteText}>❌</Text>
-              </TouchableOpacity>
-            </View>
-            
-            <Text style={styles.deadlineText}>Deadline: {item.deadline}</Text> //Goal deadline
-            <ProgressBar progress={item.completed / item.target} color="#1B5E20" style={styles.progressBar} /> //Progress bar
-            <TextInput
-              style={styles.inputSmall}
-              placeholder="Enter progress"
-              keyboardType="numeric"
-              onSubmitEditing={(event) => {
-                const value = parseInt(event.nativeEvent.text) || 0;
-                updateProgress(item.id, value);
-              }}
-            />
-          </View>
-        )}
-      />
+      
     </View>
   );
 }
@@ -199,8 +201,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   dateButtonText: {
-    color: "white",
-    fontWeight: "bold",
+    fontSize: 16,
+    color: "#000000", // Ensure text is visible
   },
   addGoal: {
     backgroundColor: "#1B5E20",
