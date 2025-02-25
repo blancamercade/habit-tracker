@@ -100,23 +100,23 @@ export default function GoalsScreen() {
       />
 
       {/* Date Picker for Deadline */}
-      <Pressable style={styles.dateButton} onPress={() => setShowDatePicker(true)}>
-        <Text style={styles.dateButtonText}>
-          {newGoalDeadline ? `Deadline: ${newGoalDeadline.toDateString()}` : "Select Deadline"}
-        </Text>
-      </Pressable>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={newGoalDeadline || new Date()}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(false);
-            if (selectedDate) setNewGoalDeadline(selectedDate);
-          }}
-        />
-      )}
+        <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
+          <Text style={styles.inputText}>
+            {newGoalDeadline ? newGoalDeadline.toDateString() : "Select Deadline"}
+          </Text>
+        </TouchableOpacity>
+        
+        {showDatePicker && (
+          <DateTimePicker
+            value={newGoalDeadline || new Date()}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) setNewGoalDeadline(selectedDate);
+            }}
+          />
+        )}
 
       <Button title="Add Goal" onPress={addGoal} />
 
@@ -169,10 +169,17 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   input: {
-    borderBottomWidth: 1,
-    marginBottom: 10,
-    padding: 5,
+    borderWidth: 1,
+    borderColor: "#BDBDBD",
+    borderRadius: 10,
+    padding: 10,
     fontSize: 16,
+    marginBottom: 10,
+    backgroundColor: "#FFFFFF",
+  },
+  inputText: {
+    fontSize: 16,
+    color: "#000000", // Ensure text is visible
   },
   inputSmall: {
     borderBottomWidth: 1,
