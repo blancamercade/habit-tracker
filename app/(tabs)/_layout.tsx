@@ -5,10 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./index"; // Home screen
 import UpdateGoalsScreen from "./UpdateGoalsScreen"; // New screen for updating progress
 import HistoryScreen from "./explore"; // History screen
-import SetObjectivesScreen from "./setobjectives"; // Objectives settings
-import SetHabitsScreen from "./sethabits"; // Habit settings
-import SetGoalsScreen from "./SetGoalsScreen"; // New screen for setting goals
-
+import SetObjectivesStack from "./SetObjectivesStack"; // ✅ Use the new stack
 
 const Tab = createBottomTabNavigator();
 
@@ -38,7 +35,7 @@ export default function Layout() {
       <Tab.Screen name="Habits" component={HomeScreen} />
       <Tab.Screen name="Goals" component={UpdateGoalsScreen} />
       <Tab.Screen name="Look Back" component={HistoryScreen} />
-      <Tab.Screen name="Set Objectives" component={SetObjectivesScreen} />
+      <Tab.Screen name="Set Objectives" component={SetObjectivesStack} />
     </Tab.Navigator>
   );
 }
