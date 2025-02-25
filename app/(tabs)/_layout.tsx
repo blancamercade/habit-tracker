@@ -29,11 +29,6 @@ export default function Layout() {
             iconName = "time-outline"; // ✅ History screen
           }  else if (route.name === "Set objectives") {
             iconName = "settings-outline"; // ✅ Set goals and habits
-          } else if (route.name === "Set Habits") {
-            iconName = "settings-outline"; // ✅ Habit settings
-          } else if (route.name === "Set Goals") {
-            iconName = "settings-outline"; // ✅ Goals settings
-          }
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
