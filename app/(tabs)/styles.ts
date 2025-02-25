@@ -63,6 +63,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     backgroundColor: "#FFFFFF",
   },
+  goalItem: {
+    marginVertical: 10,
+    padding: 10,
+  },
+  progressBar: {
+    height: 10,
+    marginVertical: 5,
+  },
 });
 
 export default styles;
