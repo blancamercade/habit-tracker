@@ -38,9 +38,9 @@ export default function GoalsScreen() {
   };
 
   // Save goals to AsyncStorage
-  const saveGoals = async () => {
+  const saveGoals = async (goalsToSave = goals) => {
     try {
-      await AsyncStorage.setItem("goals", JSON.stringify(goals));
+      await AsyncStorage.setItem("goals", JSON.stringify(goalsToSave));
     } catch (error) {
       console.error("Failed to save goals", error);
     }
@@ -66,18 +66,20 @@ export default function GoalsScreen() {
 
   // Update goal progress
   const updateProgress = (id: string, amount: number) => {
-    setGoals((prevGoals) =>
-      prevGoals.map((goal) =>
-        goal.id === id
-          ? { ...goal, completed: Math.min(goal.completed + amount, goal.target) }
-          : goal
-      )
-    );
-  };
+  const updatedGoals = goals.map((goal) =>
+    goal.id === id
+      ? { ...goal, completed: Math.min(goal.completed + amount, goal.target) }
+      : goal
+  );
+  setGoals(updatedGoals);
+  saveGoals(updatedGoals); // ✅ Save updated state to AsyncStorage
+};
 
   // Delete a goal
   const deleteGoal = (id: string) => {
-    setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== id));
+    const updatedGoals = goals.filter((goal) => goal.id !== id);
+    setGoals(updatedGoals);
+    saveGoals(updatedGoals); // ✅ Save new state to storage
   };
 
   return (
