@@ -93,7 +93,7 @@ export default function GoalsScreen() {
             
             //Goal title
             <View style={styles.goalTitleItem}> // Goal item
-              <Text style={styles.goalTitleText}> {item.name}: {item.completed}/{item.target} by {item.deadline} </Text> //Goal title
+              <Text style={styles.goalTitleText}> {item.name}: {item.completed}/{item.target} </Text> //Goal title
               {/* Delete Goal Button */}
               <TouchableOpacity onPress={() => deleteGoal(item.id)}>
                 <Text style={styles.deleteText}>❌</Text>
@@ -231,8 +231,8 @@ const styles = StyleSheet.create({
   progressBar: {
     height: 10,
     borderRadius: 5,
-    marginVertical: 5,
-    padding: 10,
+    marginVertical: 10,
+    padding: 5,
   },
   goalTitleItem: {
     backgroundColor: 'white',
