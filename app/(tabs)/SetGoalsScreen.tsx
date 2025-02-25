@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Button, FlatList, StyleSheet, Pressable } from "react-native";
+import { View, Text, TextInput, Button, FlatList, StyleSheet, Pressable, TouchableOpacity } from "react-native";
 import { Goal, loadGoals, saveGoals, addGoal, deleteGoal } from "./GoalsManager";
 import styles from "./styles";  // ✅ Import shared styles
 
@@ -35,7 +35,7 @@ export default function SetGoalsScreen() {
         onChangeText={setNewGoalTarget}
         keyboardType="numeric"
       />
-      <Button title="Add Goal" onPress={() => addGoal(goals, newGoalName, newGoalTarget, setGoals)} />
+      <Button title="+Add Goal" onPress={() => addGoal(goals, newGoalName, newGoalTarget, setGoals)} style={styles.GreenButton}/>
 
       {/* List of Goals */}
       <FlatList
@@ -48,9 +48,9 @@ export default function SetGoalsScreen() {
             </Text>
 
             {/* Delete Goal Button */}
-            <Pressable style={styles.RedButton} onPress={() => deleteGoal(item.id, goals, setGoals)}>
-              <Text style={styles.RedButtonText}>Delete</Text>
-            </Pressable>
+            <TouchableOpacity onPress={() => deleteGoal(item.id, goals, setGoals)}>
+              <Text style={styles.deleteText}>❌</Text>
+            </TouchableOpacity>
           </View>
         )}
       />
