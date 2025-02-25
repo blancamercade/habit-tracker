@@ -275,5 +275,3 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
-export default GoalsScreen;
