@@ -66,20 +66,18 @@ export default function GoalsScreen() {
 
   // Update goal progress
   const updateProgress = (id: string, amount: number) => {
-  const updatedGoals = goals.map((goal) =>
-    goal.id === id
-      ? { ...goal, completed: Math.min(goal.completed + amount, goal.target) }
-      : goal
-  );
-  setGoals(updatedGoals);
-  saveGoals(updatedGoals); // ✅ Save updated state to AsyncStorage
-};
+    setGoals((prevGoals) =>
+      prevGoals.map((goal) =>
+        goal.id === id
+          ? { ...goal, completed: Math.min(goal.completed + amount, goal.target) }
+          : goal
+      )
+    );
+  };
 
   // Delete a goal
   const deleteGoal = (id: string) => {
-    const updatedGoals = goals.filter((goal) => goal.id !== id);
-    setGoals(updatedGoals);
-    saveGoals(updatedGoals); // ✅ Save new state to storage
+    setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== id));
   };
 
   return (
