@@ -20,27 +20,27 @@ export default function Layout() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === "Today") {
+          if (route.name === "Habits") {
             iconName = "checkbox-outline"; // ✅ Daily habits
-          } else if (route.name === "Set Goals") {
-            iconName = "add-circle-outline"; // ✅ Add Goals
-          } else if (route.name === "Update Goals") {
+          } else if (route.name === "Goals") {
             iconName = "trophy-outline"; // ✅ Track Goals
           } else if (route.name === "Look Back") {
             iconName = "time-outline"; // ✅ History screen
           } else if (route.name === "Set Habits") {
             iconName = "settings-outline"; // ✅ Habit settings
+          } else if (route.name === "Set Goals") {
+            iconName = "settings-outline"; // ✅ Goals settings
           }
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
       })}
     >
-      <Tab.Screen name="Today" component={HomeScreen} />
-      <Tab.Screen name="Set Goals" component={SetGoalsScreen} />
-      <Tab.Screen name="Update Goals" component={UpdateGoalsScreen} />
+      <Tab.Screen name="Habits" component={HomeScreen} />
+      <Tab.Screen name="Goals" component={UpdateGoalsScreen} />
       <Tab.Screen name="Look Back" component={HistoryScreen} />
       <Tab.Screen name="Set Habits" component={SetHabitsScreen} />
+      <Tab.Screen name="Set Goals" component={SetGoalsScreen} />
     </Tab.Navigator>
   );
 }
