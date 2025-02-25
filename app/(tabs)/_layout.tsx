@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import HomeScreen from "./index"; // Home screen
 import HistoryScreen from "./explore"; // History screen
 import SetHabitsScreen from "./sethabits"; // Habit settings
+import SetObjectivesScreen from "./setobjectives"; // Objectives settings
 import SetGoalsScreen from "./SetGoalsScreen"; // New screen for setting goals
 import UpdateGoalsScreen from "./UpdateGoalsScreen"; // New screen for updating progress
 
@@ -26,6 +27,8 @@ export default function Layout() {
             iconName = "trophy-outline"; // ✅ Track Goals
           } else if (route.name === "Look Back") {
             iconName = "time-outline"; // ✅ History screen
+          }  else if (route.name === "Set objectives") {
+            iconName = "settings-outline"; // ✅ Set goals and habits
           } else if (route.name === "Set Habits") {
             iconName = "settings-outline"; // ✅ Habit settings
           } else if (route.name === "Set Goals") {
@@ -39,6 +42,8 @@ export default function Layout() {
       <Tab.Screen name="Habits" component={HomeScreen} />
       <Tab.Screen name="Goals" component={UpdateGoalsScreen} />
       <Tab.Screen name="Look Back" component={HistoryScreen} />
+      <Tab.Screen name="Set objectives" component={SetObjectivesScreen} />
+      <Tab.Screen name="Set Goals" component={SetGoalsScreen} />
       <Tab.Screen name="Set Habits" component={SetHabitsScreen} />
       <Tab.Screen name="Set Goals" component={SetGoalsScreen} />
     </Tab.Navigator>
