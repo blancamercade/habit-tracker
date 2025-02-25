@@ -34,7 +34,7 @@ export default function UpdateGoalsScreen() {
 
             {/* Input for Progress Update */}
             <TextInput
-              style={styles.inputSmall}
+              style={styles.input}
               placeholder="Enter progress"
               keyboardType="numeric"
               onSubmitEditing={(event) => {
@@ -48,21 +48,3 @@ export default function UpdateGoalsScreen() {
     </View>
   );
 }
-
-// Styles
-const styles = StyleSheet.create({
-   inputSmall: {
-    borderBottomWidth: 1,
-    width: 80,
-    padding: 5,
-    marginTop: 5,
-  },
-  goalItem: {
-    marginVertical: 10,
-    padding: 10,
-  },
-  progressBar: {
-    height: 10,
-    marginVertical: 5,
-  },
-});
