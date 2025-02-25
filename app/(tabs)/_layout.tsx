@@ -3,11 +3,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 
 import HomeScreen from "./index"; // Home screen
-import HistoryScreen from "./explore"; // History screen
-import SetHabitsScreen from "./sethabits"; // Habit settings
-import SetObjectivesScreen from "./setobjectives"; // Objectives settings
-import SetGoalsScreen from "./SetGoalsScreen"; // New screen for setting goals
 import UpdateGoalsScreen from "./UpdateGoalsScreen"; // New screen for updating progress
+import HistoryScreen from "./explore"; // History screen
+import SetObjectivesScreen from "./setobjectives"; // Objectives settings
+import SetHabitsScreen from "./sethabits"; // Habit settings
+import SetGoalsScreen from "./SetGoalsScreen"; // New screen for setting goals
+
 
 const Tab = createBottomTabNavigator();
 
