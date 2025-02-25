@@ -24,8 +24,8 @@ export default function UpdateGoalsScreen() {
         data={goals}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.goalItem}>
-            <Text style={styles.goalText}>
+          <View style={styles.habitItem}>
+            <Text style={styles.habitText}>
               {item.name}: {item.completed}/{item.target}
             </Text>
 
