@@ -78,8 +78,10 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   goalItem: {
-    marginVertical: 10,
-    padding: 10,
+    padding: 15,
+    marginVertical: 5,
+    backgroundColor: "#fff",
+    borderRadius: 10,
   },
   deleteButton: {
     backgroundColor: 'red',
