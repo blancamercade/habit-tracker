@@ -11,12 +11,12 @@ const SetObjectivesScreen = () => {
       <Text style={styles.title}>Define Your Objectives</Text>
 
       {/* Edit your daily habits */}
-      <TouchableOpacity style={styles.GreenButton} onPress={() => navigation.navigate("SetHabitsScreen")}>
+      <TouchableOpacity style={styles.GreenButton} onPress={() => navigation.navigate("Set Habits")}>
         <Text style={styles.GreenButtonText}>Edit your daily habits</Text>
       </TouchableOpacity>
 
       {/* Edit your daily habits */}
-      <TouchableOpacity style={styles.GreenButton} onPress={() => navigation.navigate("SetGoalsScreen")}>
+      <TouchableOpacity style={styles.GreenButton} onPress={() => navigation.navigate("Set Goals")}>
         <Text style={styles.GreenButtonText}>Set your larger goals</Text>
       </TouchableOpacity>
       
