@@ -28,7 +28,7 @@ export default function Layout() {
           } else if (route.name === "Look Back") {
             iconName = "time-outline"; // ✅ History screen
           }  else if (route.name === "Set objectives") {
-            iconName = "settings-outline"; // ✅ Set goals and habits
+            iconName = "settings-outline";} // ✅ Set goals and habits
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
