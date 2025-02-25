@@ -18,6 +18,9 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 5,
     borderRadius: 10,
+    flexDirection: "row",  // Align items horizontally
+    justifyContent: "space-between", // Push items to the edges
+    alignItems: "center", // Align vertically in the center
   },
   habitCompleted: {
     backgroundColor: '#c8e6c9',
@@ -40,7 +43,26 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-
+  RedButton: {
+    backgroundColor: 'red',
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  RedButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: "#BDBDBD",
+    borderRadius: 10,
+    padding: 10,
+    fontSize: 16,
+    marginBottom: 10,
+    backgroundColor: "#FFFFFF",
+  },
 });
 
 export default styles;
