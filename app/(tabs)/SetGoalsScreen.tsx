@@ -21,25 +21,6 @@ export default function SetGoalsScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>Set Your Goals</Text>
 
-      {/* Input Fields to Add a Goal */}
-      <TextInput
-        style={styles.input}
-        placeholder="Goal name (e.g., Push-ups)"
-        value={newGoalName}
-        onChangeText={setNewGoalName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Target (e.g., 3000)"
-        value={newGoalTarget}
-        onChangeText={setNewGoalTarget}
-        keyboardType="numeric"
-      />
-      
-      <TouchableOpacity style={styles.GreenButton} onPress={() => addGoal(goals, newGoalName, newGoalTarget, setGoals)}>
-        <Text style={styles.GreenButtonText}>+ Add Goal</Text>
-      </TouchableOpacity>
-      
       {/* List of Goals */}
       <FlatList
         data={goals}
@@ -57,6 +38,25 @@ export default function SetGoalsScreen() {
           </View>
         )}
       />
+      
+      {/* Input Fields to Add a Goal */}
+      <TextInput
+        style={styles.input}
+        placeholder="Goal name (e.g., Push-ups)"
+        value={newGoalName}
+        onChangeText={setNewGoalName}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Target (e.g., 3000)"
+        value={newGoalTarget}
+        onChangeText={setNewGoalTarget}
+        keyboardType="numeric"
+      />
+      <TouchableOpacity style={styles.GreenButton} onPress={() => addGoal(goals, newGoalName, newGoalTarget, setGoals)}>
+        <Text style={styles.GreenButtonText}>+ Add Goal</Text>
+      </TouchableOpacity>
+      
     </View>
   );
 }
