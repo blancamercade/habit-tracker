@@ -42,14 +42,14 @@ export default function SetGoalsScreen() {
         data={goals}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.goalItem}>
-            <Text style={styles.goalText}>
+          <View style={styles.habitItem}>
+            <Text style={styles.habitText}>
               {item.name}: {item.target}
             </Text>
 
             {/* Delete Goal Button */}
-            <Pressable style={styles.deleteButton} onPress={() => deleteGoal(item.id, goals, setGoals)}>
-              <Text style={styles.deleteText}>Delete</Text>
+            <Pressable style={styles.RedButton} onPress={() => deleteGoal(item.id, goals, setGoals)}>
+              <Text style={styles.RedButtonText}>Delete</Text>
             </Pressable>
           </View>
         )}
@@ -57,37 +57,3 @@ export default function SetGoalsScreen() {
     </View>
   );
 }
-
-// Styles
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-    paddingTop: 50,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  input: {
-    borderBottomWidth: 1,
-    marginBottom: 10,
-    padding: 5,
-  },
-  goalItem: {
-    padding: 15,
-    marginVertical: 5,
-    backgroundColor: "#fff",
-    borderRadius: 10,
-  },
-  deleteButton: {
-    backgroundColor: 'red',
-    padding: 10,
-  },
-  deleteText: {
-    color: "white",
-  },
-});
