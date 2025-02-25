@@ -137,12 +137,15 @@ export default function GoalsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
+    paddingTop: 50,
     padding: 20,
   },
   title: {
-    fontSize: 22,
-    fontWeight: "bold",
-    marginBottom: 10,
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   input: {
     borderBottomWidth: 1,
@@ -173,15 +176,14 @@ const styles = StyleSheet.create({
     marginVertical: 5,
   },
   deleteButton: {
-    marginTop: 10,
-    backgroundColor: "#D32F2F",
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    borderRadius: 5,
-    alignSelf: "flex-start",
+    backgroundColor: 'red',
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
   },
   deleteText: {
     color: "white",
+    fontSize: 16,
     fontWeight: "bold",
   },
 });
