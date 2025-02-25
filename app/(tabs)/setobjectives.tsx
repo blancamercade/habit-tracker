@@ -3,7 +3,7 @@ import { View, Text, TextInput, Button, FlatList, StyleSheet, Pressable, Touchab
 import { useNavigation } from "@react-navigation/native";
 import styles from "./styles";  // ✅ Import shared styles
 
-const DefineObjectivesScreen = () => {
+const SetObjectivesScreen = () => {
   const navigation = useNavigation(); // ✅ Get navigation prop
 
   return (
@@ -24,3 +24,5 @@ const DefineObjectivesScreen = () => {
     </View>
   );
 }
+
+export default SetObjectivesScreen;
