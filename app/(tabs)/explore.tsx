@@ -74,27 +74,3 @@ export default function HistoryScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  noHistory: {
-    textAlign: 'center',
-    fontSize: 16,
-    color: 'gray',
-    padding: 15,
-  },
-  historyItem: {
-    backgroundColor: 'white',
-    padding: 15,
-    marginVertical: 5,
-    borderRadius: 10,
-  },
-  date: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  habit: {
-    fontSize: 14,
-    color: 'gray',
-  },
-});
