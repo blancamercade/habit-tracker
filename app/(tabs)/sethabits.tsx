@@ -58,60 +58,16 @@ export default function SetHabitsScreen() {
         value={newHabit}
         onChangeText={setNewHabit}
       />
-      <TouchableOpacity style={styles.addButton} onPress={addHabit}>
-        <Text style={styles.addButtonText}>+ Add Habit</Text>
+      <TouchableOpacity style={styles.GreenButton} onPress={addHabit}>
+        <Text style={styles.GreenButtonText}>+ Add Habit</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f5f5f5',
-    paddingTop: 50,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  habitItem: {
-    backgroundColor: 'white',
-    padding: 15,
-    marginVertical: 5,
-    borderRadius: 10,
-    flexDirection: "row",  // Align items horizontally
-    justifyContent: "space-between", // Push items to the edges
-    alignItems: "center", // Align vertically in the center
-  },
-  habitText: {
-    fontSize: 18,
-  },
   deleteText: {
     fontSize: 18,
     color: "red",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#BDBDBD",
-    borderRadius: 10,
-    padding: 10,
-    fontSize: 16,
-    marginBottom: 10,
-    backgroundColor: "#FFFFFF",
-  },
-  addButton: {
-    backgroundColor: "#1B5E20",
-    padding: 12,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  addButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });
