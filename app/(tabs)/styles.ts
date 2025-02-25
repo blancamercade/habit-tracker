@@ -92,6 +92,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'gray',
   },
+  deleteText: {
+    fontSize: 18,
+    color: "red",
+  },
 });
 
 export default styles;
