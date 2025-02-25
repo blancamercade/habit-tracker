@@ -118,7 +118,10 @@ export default function GoalsScreen() {
           />
         )}
 
-      <Button title="Add Goal" onPress={addGoal} />
+      // Add goal   
+      <TouchableOpacity style={styles.addGoal} onPress={addGoal}>
+        <Text style={styles.addGoalText}>+ Add Goal</Text>
+      </TouchableOpacity>
 
       {/* List of Goals */}
       <FlatList
@@ -197,6 +200,17 @@ const styles = StyleSheet.create({
   },
   dateButtonText: {
     color: "white",
+    fontWeight: "bold",
+  },
+  addGoal: {
+    backgroundColor: "#1B5E20",
+    padding: 12,
+    borderRadius: 10,
+    alignItems: "center",
+  },
+  addGoalText: {
+    color: "white",
+    fontSize: 16,
     fontWeight: "bold",
   },
   goalItem: {
