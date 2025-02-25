@@ -64,10 +64,3 @@ export default function SetHabitsScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  deleteText: {
-    fontSize: 18,
-    color: "red",
-  },
-});
