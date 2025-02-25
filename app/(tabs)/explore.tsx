@@ -68,26 +68,14 @@ export default function HistoryScreen() {
         />
       )}
       {/* Button to clear history data */}
-      <TouchableOpacity style={styles.resetButton} onPress={resetHistory}>
-        <Text style={styles.resetButtonText}>Reset history</Text>
+      <TouchableOpacity style={styles.RedButton} onPress={resetHistory}>
+        <Text style={styles.RedButtonText}>Reset history</Text>
       </TouchableOpacity>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f5f5f5',
-    paddingTop: 50,
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
   noHistory: {
     textAlign: 'center',
     fontSize: 16,
@@ -108,16 +96,5 @@ const styles = StyleSheet.create({
   habit: {
     fontSize: 14,
     color: 'gray',
-  },
-  resetButton: {
-    backgroundColor: 'red',
-    padding: 12,
-    borderRadius: 10,
-    alignItems: "center",
-  },
-  resetButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
   },
 });
