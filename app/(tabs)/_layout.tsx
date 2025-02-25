@@ -20,11 +20,11 @@ export default function Layout() {
           if (route.name === 'Today') {
             iconName = 'checkbox-outline'; // Icon for daily habits
           } else if (route.name === 'Goals') {
-            iconName = 'settings-outline'; // Icon for setting goals
+            iconName = 'trophy-outline'; // Icon for setting goals
           } else if (route.name === 'Look Back') {
             iconName = 'time-outline'; // Icon for reflecting
           } else if (route.name === 'Set Habits') {
-            iconName = 'trophy-outline'; // Icon for setting habits
+            iconName = 'settings-outline'; // Icon for setting habits
           } 
 
           return <Ionicons name={iconName} size={size} color={color} />;
