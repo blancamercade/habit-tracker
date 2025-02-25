@@ -71,6 +71,27 @@ const styles = StyleSheet.create({
     height: 10,
     marginVertical: 5,
   },
+  noHistory: {
+    textAlign: 'center',
+    fontSize: 16,
+    color: 'gray',
+    padding: 15,
+  },
+  historyItem: {
+    backgroundColor: 'white',
+    padding: 15,
+    marginVertical: 5,
+    borderRadius: 10,
+  },
+  date: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  habit: {
+    fontSize: 14,
+    color: 'gray',
+  },
 });
 
 export default styles;
