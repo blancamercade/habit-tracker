@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, FlatList, StyleSheet, Pressable } from "react-native";
 import { ProgressBar } from "react-native-paper";
 import { Goal, loadGoals, saveGoals, updateProgress } from "./GoalsManager";
+import styles from "./styles";  // ✅ Import shared styles
+
 
 export default function UpdateGoalsScreen() {
   const [goals, setGoals] = useState<Goal[]>([]);
