@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import styles from "./styles";  // ✅ Import shared styles
+
 
 export default function SetHabitsScreen() {
   const [habits, setHabits] = useState([]);
