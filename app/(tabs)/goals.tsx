@@ -182,7 +182,7 @@ return (
   </View>
 );
 
-
+}
 // Styles
 const styles = StyleSheet.create({
   container: {
@@ -275,5 +275,3 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
-export default GoalsScreen;
