@@ -80,15 +80,19 @@ export default function GoalsScreen() {
     setGoals((prevGoals) => prevGoals.filter((goal) => goal.id !== id));
   };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Goals</Text>
+return (
+  <View style={styles.container}>
+    <Text style={styles.title}>Goals</Text>
 
-      {/* List of Goals */}
-      <FlatList
-        data={goals}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
+    {/* List of Goals */}
+    <FlatList
+      data={goals}
+      keyExtractor={(item) => item.id}
+      keyboardShouldPersistTaps="handled" // ✅ Ensures buttons work after input
+      renderItem={({ item }) => {
+        const [progressInput, setProgressInput] = useState(""); // ✅ Local state
+
+        return (
           <View style={styles.goalItem}>
             {/* Goal title row */}
             <View style={styles.goalTitleItem}>
@@ -103,65 +107,81 @@ export default function GoalsScreen() {
 
             {/* Progress Bar */}
             <ProgressBar progress={item.completed / item.target} color="#1B5E20" style={styles.progressBar} />
-            
+
             {/* Deadline */}
             <Text style={styles.goalTitleText}>By {item.deadline}</Text>
 
             {/* Enter Progress */}
-            <TextInput
-              style={styles.input}
-              placeholder="Enter progress"
-              keyboardType="numeric"
-              onSubmitEditing={(event) => {
-                const value = parseInt(event.nativeEvent.text) || 0;
-                updateProgress(item.id, value);
-              }}
-            />
+            <View style={styles.progressInputContainer}>
+              <TextInput
+                style={styles.inputSmall} // ✅ Reduced size for better UX
+                placeholder="Enter progress"
+                keyboardType="numeric"
+                value={progressInput}
+                onChangeText={setProgressInput} // ✅ Local state before submit
+                onSubmitEditing={() => {
+                  const value = parseInt(progressInput) || 0;
+                  updateProgress(item.id, value);
+                  setProgressInput(""); // ✅ Clear input after updating
+                }}
+              />
+              <TouchableOpacity
+                style={styles.submitButton}
+                onPress={() => {
+                  const value = parseInt(progressInput) || 0;
+                  updateProgress(item.id, value);
+                  setProgressInput("");
+                }}
+              >
+                <Text style={styles.submitText}>✔</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        )}
+        );
+      }}
+    />
+
+    {/* Input Fields to Add a Goal */}
+    <TextInput
+      style={styles.input}
+      placeholder="Goal name (e.g., Push-ups)"
+      value={newGoalName}
+      onChangeText={setNewGoalName}
+    />
+    <TextInput
+      style={styles.input}
+      placeholder="Target (e.g., 3000)"
+      value={newGoalTarget}
+      onChangeText={setNewGoalTarget}
+      keyboardType="numeric"
+    />
+
+    {/* Date Picker for Deadline */}
+    <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
+      <Text style={styles.inputText}>
+        {newGoalDeadline ? newGoalDeadline.toDateString() : "Select Deadline"}
+      </Text>
+    </TouchableOpacity>
+
+    {showDatePicker && (
+      <DateTimePicker
+        value={newGoalDeadline || new Date()}
+        mode="date"
+        display="default"
+        onChange={(event, selectedDate) => {
+          setShowDatePicker(false);
+          if (selectedDate) setNewGoalDeadline(selectedDate);
+        }}
       />
+    )}
 
-      {/* Input Fields to Add a Goal */}
-      <TextInput
-        style={styles.input}
-        placeholder="Goal name (e.g., Push-ups)"
-        value={newGoalName}
-        onChangeText={setNewGoalName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Target (e.g., 3000)"
-        value={newGoalTarget}
-        onChangeText={setNewGoalTarget}
-        keyboardType="numeric"
-      />
+    {/* Add Goal Button */}
+    <TouchableOpacity style={styles.addGoal} onPress={addGoal}>
+      <Text style={styles.addGoalText}>+ Add Goal</Text>
+    </TouchableOpacity>
+  </View>
+);
 
-      {/* Date Picker for Deadline */}
-      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
-        <Text style={styles.inputText}>
-          {newGoalDeadline ? newGoalDeadline.toDateString() : "Select Deadline"}
-        </Text>
-      </TouchableOpacity>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={newGoalDeadline || new Date()}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(false);
-            if (selectedDate) setNewGoalDeadline(selectedDate);
-          }}
-        />
-      )}
-
-      {/* Add Goal Button */}
-      <TouchableOpacity style={styles.addGoal} onPress={addGoal}>
-        <Text style={styles.addGoalText}>+ Add Goal</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
 
 // Styles
 const styles = StyleSheet.create({
@@ -225,6 +245,34 @@ const styles = StyleSheet.create({
   deleteText: {
     fontSize: 16,
     color: "red",
+  },
+  progressInputContainer: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginTop: 5,
+  },
+  inputSmall: {
+    borderWidth: 1,
+    borderColor: "#BDBDBD",
+    borderRadius: 8,
+    padding: 8,
+    fontSize: 14,
+    width: 80,
+    backgroundColor: "#FFFFFF",
+    marginRight: 8,
+  },
+  submitButton: {
+    backgroundColor: "#1B5E20",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  submitText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 
