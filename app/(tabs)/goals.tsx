@@ -93,17 +93,15 @@ export default function GoalsScreen() {
             
             //Goal title
             <View style={styles.goalTitleItem}> // Goal item
-              <Text style={styles.goalTitleText}> {item.name}: {item.completed}/{item.target} </Text> //Goal title
+              <Text style={styles.goalTitleText}> {item.name}: {item.completed}/{item.target} by {item.deadline} </Text> //Goal title
               {/* Delete Goal Button */}
               <TouchableOpacity onPress={() => deleteGoal(item.id)}>
                 <Text style={styles.deleteText}>❌</Text>
               </TouchableOpacity>
             </View>
-            
-            <Text style={styles.deadlineText}>Deadline: {item.deadline}</Text> //Goal deadline
             <ProgressBar progress={item.completed / item.target} color="#1B5E20" style={styles.progressBar} /> //Progress bar
             <TextInput
-              style={styles.inputSmall}
+              style={styles.input}
               placeholder="Enter progress"
               keyboardType="numeric"
               onSubmitEditing={(event) => {
@@ -115,7 +113,7 @@ export default function GoalsScreen() {
         )}
       />
 
-{/* Input Fields to Add a Goal */}
+      {/* Input Fields to Add a Goal */}
       <TextInput
         style={styles.input}
         placeholder="Goal name (e.g., Push-ups)"
@@ -216,10 +214,10 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   goalItem: {
-    marginVertical: 10,
-    padding: 10,
+    padding: 15,
+    marginVertical: 5,
     backgroundColor: "#fff",
-    borderRadius: 5,
+    borderRadius: 10,
   },
   goalText: {
     fontSize: 16,
@@ -236,8 +234,6 @@ const styles = StyleSheet.create({
   },
   goalTitleItem: {
     backgroundColor: 'white',
-    padding: 15,
-    marginVertical: 5,
     borderRadius: 10,
     flexDirection: "row",  // Align items horizontally
     justifyContent: "space-between", // Push items to the edges
