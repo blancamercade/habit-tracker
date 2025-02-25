@@ -35,8 +35,11 @@ export default function SetGoalsScreen() {
         onChangeText={setNewGoalTarget}
         keyboardType="numeric"
       />
-      <Button title="+Add Goal" onPress={() => addGoal(goals, newGoalName, newGoalTarget, setGoals)} style={styles.GreenButton}/>
-
+      
+      <TouchableOpacity style={styles.GreenButton} onPress={() => addGoal(goals, newGoalName, newGoalTarget, setGoals)}>
+        <Text style={styles.GreenButtonText}>+ Add Goal</Text>
+      </TouchableOpacity>
+      
       {/* List of Goals */}
       <FlatList
         data={goals}
