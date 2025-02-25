@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, TextInput, FlatList, StyleSheet, TouchableOpacity, KeyboardAvoidingView, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ProgressBar } from "react-native-paper";
 import DateTimePicker from "@react-native-community/datetimepicker";
@@ -18,7 +18,7 @@ export default function GoalsScreen() {
   const [newGoalTarget, setNewGoalTarget] = useState("");
   const [newGoalDeadline, setNewGoalDeadline] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [progressInputs, setProgressInputs] = useState<{ [key: string]: string }>({}); // ✅ Global input state
+  const [progressInputs, setProgressInputs] = useState<{ [key: string]: string }>({}); // Global input state
 
   useEffect(() => {
     loadGoals();
@@ -56,7 +56,7 @@ export default function GoalsScreen() {
       name: newGoalName,
       target: parseInt(newGoalTarget),
       completed: 0,
-      deadline: newGoalDeadline.toISOString().split("T")[0], // Store as YYYY-MM-DD
+      deadline: newGoalDeadline.toISOString().split("T")[0],
     };
 
     setGoals((prevGoals) => [...prevGoals, newGoal]);
@@ -87,64 +87,69 @@ export default function GoalsScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Goals</Text>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+    >
+      <View style={styles.container}>
+        <Text style={styles.title}>Goals</Text>
 
-      {/* List of Goals */}
-      <FlatList
-        data={goals}
-        keyExtractor={(item) => item.id}
-        keyboardShouldPersistTaps="handled"
-        renderItem={({ item }) => (
-          <GoalItem
-            item={item}
-            progressInput={progressInputs[item.id] || ""}
-            onProgressChange={handleProgressInputChange}
-            onUpdateProgress={updateProgress}
-            onDeleteGoal={deleteGoal}
+        {/* List of Goals */}
+        <FlatList
+          data={goals}
+          keyExtractor={(item) => item.id}
+          keyboardShouldPersistTaps="always"  // Changed to "always"
+          renderItem={({ item }) => (
+            <GoalItem
+              item={item}
+              progressInput={progressInputs[item.id] || ""}
+              onProgressChange={handleProgressInputChange}
+              onUpdateProgress={updateProgress}
+              onDeleteGoal={deleteGoal}
+            />
+          )}
+        />
+
+        {/* Input Fields to Add a Goal */}
+        <TextInput
+          style={styles.input}
+          placeholder="Goal name (e.g., Push-ups)"
+          value={newGoalName}
+          onChangeText={setNewGoalName}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Target (e.g., 3000)"
+          value={newGoalTarget}
+          onChangeText={setNewGoalTarget}
+          keyboardType="numeric"
+        />
+
+        {/* Date Picker for Deadline */}
+        <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
+          <Text style={styles.inputText}>
+            {newGoalDeadline ? newGoalDeadline.toDateString() : "Select Deadline"}
+          </Text>
+        </TouchableOpacity>
+
+        {showDatePicker && (
+          <DateTimePicker
+            value={newGoalDeadline || new Date()}
+            mode="date"
+            display="default"
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) setNewGoalDeadline(selectedDate);
+            }}
           />
         )}
-      />
 
-      {/* Input Fields to Add a Goal */}
-      <TextInput
-        style={styles.input}
-        placeholder="Goal name (e.g., Push-ups)"
-        value={newGoalName}
-        onChangeText={setNewGoalName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Target (e.g., 3000)"
-        value={newGoalTarget}
-        onChangeText={setNewGoalTarget}
-        keyboardType="numeric"
-      />
-
-      {/* Date Picker for Deadline */}
-      <TouchableOpacity onPress={() => setShowDatePicker(true)} style={styles.input}>
-        <Text style={styles.inputText}>
-          {newGoalDeadline ? newGoalDeadline.toDateString() : "Select Deadline"}
-        </Text>
-      </TouchableOpacity>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={newGoalDeadline || new Date()}
-          mode="date"
-          display="default"
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(false);
-            if (selectedDate) setNewGoalDeadline(selectedDate);
-          }}
-        />
-      )}
-
-      {/* Add Goal Button */}
-      <TouchableOpacity style={styles.addGoal} onPress={addGoal}>
-        <Text style={styles.addGoalText}>+ Add Goal</Text>
-      </TouchableOpacity>
-    </View>
+        {/* Add Goal Button */}
+        <TouchableOpacity style={styles.addGoal} onPress={addGoal}>
+          <Text style={styles.addGoalText}>+ Add Goal</Text>
+        </TouchableOpacity>
+      </View>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -192,7 +197,6 @@ const GoalItem = ({ item, progressInput, onProgressChange, onUpdateProgress, onD
   );
 };
 
-// Styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -240,6 +244,38 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   addGoalText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  deleteText: {
+    fontSize: 16,
+    color: "red",
+  },
+  progressInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 5,
+  },
+  inputSmall: {
+    borderWidth: 1,
+    borderColor: "#BDBDBD",
+    borderRadius: 8,
+    padding: 8,
+    fontSize: 14,
+    width: 80,
+    backgroundColor: "#FFFFFF",
+    marginRight: 8,
+  },
+  submitButton: {
+    backgroundColor: "#1B5E20",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  submitText: {
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
